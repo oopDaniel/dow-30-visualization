@@ -1,9 +1,21 @@
-const path = require('path');
+const path    = require('path');
 const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet');
+const morgan  = require('morgan');
+const helmet  = require('helmet');
 
-const app = express();
+const app     = express();
+
+
+
+////////////////////////////////////
+
+
+import { DataService } from './core'; 
+DataService.init();
+
+////////////////////////////////////
+
+
 
 // TODO - use passport.js
 // TODO - use session store
@@ -38,6 +50,8 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('combined'));
   app.use(helmet());
   app.use('/static', express.static(path.join(__dirname, '..', 'dist')));
+
+
 }
 
 // for api routes
