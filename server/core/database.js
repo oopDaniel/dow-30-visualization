@@ -9,10 +9,11 @@ if (CONFIG.log.useLogger) {
 
 
 export default class Database {
-  static db = new sqlite.Database(':memory:');
+  static db;
   static hasTableCreated = false;
 
   static createTable() {
+    this.db = new sqlite.Database(':memory:');
     this.db.serialize( () => {
       const scheme = `(
         Name TEXT,

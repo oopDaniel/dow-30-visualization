@@ -1,3 +1,3 @@
-export * from './Database';
-export * from './request';
-export * from './DataService';
+export Database from './Database';
+export Request from './request';
+export DataService from './DataService';

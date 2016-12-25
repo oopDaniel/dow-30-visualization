@@ -1,4 +1,4 @@
-import express from 'express'
+import express from 'express';
 import path from 'path';
 import DB from './../core/Database';
 import CONFIG from './../../config';
@@ -10,7 +10,6 @@ let logger   = console;
 if (CONFIG.log.useLogger) {
   logger     = require('log4js').getLogger('cheese');
 }
-
 
 
 router.get('/api/latest', (req, res) => {
@@ -27,16 +26,16 @@ router.get('/api/latest', (req, res) => {
         AND t1.Date = t2.Date
     ORDER BY date DESC
   `;
-    DB.query(stmt)
-      .then( (result) => {
-        res.setHeader('Content-Type', 'application-json; charset=utf-8');
-        res.end(JSON.stringify(result));
-      })
-      .catch( (err) => {
-        logger.log(err)
-        const errMsg = { err };
-        res.end(JSON.stringify(result));
-      })
+  DB.query(stmt)
+  .then((result) => {
+    res.setHeader('Content-Type', 'application-json; charset=utf-8');
+    res.end(JSON.stringify(result));
+  })
+  .catch((err) => {
+    logger.log(err);
+    const errMsg = { err };
+    res.end(JSON.stringify(errMsg));
+  });
 });
 
 router.get('*', (req, res) => {

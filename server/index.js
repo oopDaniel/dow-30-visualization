@@ -1,24 +1,21 @@
-const path    = require('path');
-const express = require('express');
-// const morgan  = require('morgan');
-const helmet  = require('helmet');
+import path from 'path';
+import express from 'express';
+// import morgan from 'morgan';
+import helmet  from 'helmet';
 
-const app     = express();
+// ==========================================
 
-
-
-////////////////////////////////////
-
-
-import CONFIG from './../config';
-import Database from './core/Database';
-import { DataService } from './core';
 import log4js from 'log4js';
+import { DataService } from './core';
 import router from './routes/routes';
+// import CONFIG from './../config';
+// import Database from './core/Database';
 
 
-// ============== log4js init ==============
+const app = express();
 
+
+// ============    log4js init   =============
 
 log4js.loadAppender('file');
 log4js.configure({
@@ -29,34 +26,30 @@ log4js.configure({
       filename: 'logs/cheese.log',
       maxLogSize: 1024,
       backups: 3,
-      category: 'cheese'
-    }
-  ]
+      category: 'cheese',
+    },
+  ],
 });
 
 const logger     = log4js.getLogger('normal');
 const fileLogger = log4js.getLogger('cheese');
 
-///   Record the accesses on console
+//   Record the accesses on console
 app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
 
-
-// ============== /log4js init ==============
-
+// ==========================================
 
 
 DataService.init()
-  .then( () => logger.info('Data is ready now'));
+  .then(() => logger.info('Data is ready now'));
 
 // let d = new Database();
 // d.ins();
 // setTimeout( () => Database.query().then(e => console.log('asd',e)), 3000);
 // d.query();
-////////////////////////////////////
 
 
-
-
+// ==========================================
 
 
 // TODO - use passport.js
@@ -84,16 +77,14 @@ if (process.env.NODE_ENV !== 'production') {
   const devConfig = require('../webpack.config.dev');
   const compiler = webpack(devConfig);
   app.use(require('webpack-dev-middleware')(compiler, {
-    noInfo: true,
-    publicPath: devConfig.output.publicPath
+    noInfo:     true,
+    publicPath: devConfig.output.publicPath,
   }));
   app.use(require('webpack-hot-middleware')(compiler));
 } else {
   // app.use(morgan('combined'));
   app.use(helmet());
   app.use('/static', express.static(path.join(__dirname, '..', 'dist')));
-
-
 }
 
 // for api routes
@@ -104,12 +95,10 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use('/', router);
 
-
-
 const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
 
-app.listen(port, host, err => {
+app.listen(port, host, (err) => {
   if (err) {
     logger.error(err);
     fileLogger.error(err);
