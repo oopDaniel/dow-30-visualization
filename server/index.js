@@ -1,6 +1,6 @@
 const path    = require('path');
 const express = require('express');
-const morgan  = require('morgan');
+// const morgan  = require('morgan');
 const helmet  = require('helmet');
 
 const app     = express();
@@ -10,10 +10,52 @@ const app     = express();
 ////////////////////////////////////
 
 
-import { DataService } from './core'; 
-DataService.init();
+import CONFIG from './../config';
+import Database from './core/Database';
+import { DataService } from './core';
+import log4js from 'log4js';
+import router from './routes/routes';
 
+
+// ============== log4js init ==============
+
+
+log4js.loadAppender('file');
+log4js.configure({
+  appenders: [
+    { type: 'console', category: 'normal' },
+    {
+      type: 'file',
+      filename: 'logs/cheese.log',
+      maxLogSize: 1024,
+      backups: 3,
+      category: 'cheese'
+    }
+  ]
+});
+
+const logger     = log4js.getLogger('normal');
+const fileLogger = log4js.getLogger('cheese');
+
+///   Record the accesses on console
+app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
+
+
+// ============== /log4js init ==============
+
+
+
+DataService.init()
+  .then( () => logger.info('Data is ready now'));
+
+// let d = new Database();
+// d.ins();
+// setTimeout( () => Database.query().then(e => console.log('asd',e)), 3000);
+// d.query();
 ////////////////////////////////////
+
+
+
 
 
 
@@ -37,7 +79,7 @@ DataService.init();
 // }));
 
 if (process.env.NODE_ENV !== 'production') {
-  app.use(morgan('dev'));
+  // app.use(morgan('dev'));
   const webpack = require('webpack');
   const devConfig = require('../webpack.config.dev');
   const compiler = webpack(devConfig);
@@ -47,7 +89,7 @@ if (process.env.NODE_ENV !== 'production') {
   }));
   app.use(require('webpack-hot-middleware')(compiler));
 } else {
-  app.use(morgan('combined'));
+  // app.use(morgan('combined'));
   app.use(helmet());
   app.use('/static', express.static(path.join(__dirname, '..', 'dist')));
 
@@ -59,17 +101,19 @@ if (process.env.NODE_ENV !== 'production') {
 // const bodyParser = require('body-parser');
 // app.use(bodyParser.json())
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
+
+app.use('/', router);
+
+
 
 const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
 
 app.listen(port, host, err => {
   if (err) {
-    console.error(err);
+    logger.error(err);
+    fileLogger.error(err);
     return;
   }
-  console.info(`listening at ${host}:${port}`);
+  logger.info(`listening at ${host}:${port}`);
 });
