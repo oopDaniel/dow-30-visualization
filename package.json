@@ -13,7 +13,7 @@
     "start": "cross-env NODE_ENV=dev babel-node server/index",
     "lint": "eslint src",
     "pretest": "npm run lint",
-    "test": "cross-env NODE_ENV=test mocha"
+    "test": "cross-env NODE_ENV=test babel-node test/index.js | tap-spec"
   },
   "keywords": [
     "dow 30",
@@ -44,7 +44,6 @@
     "eventsource-polyfill": "^0.9.6",
     "file-loader": "^0.9.0",
     "lost": "^7.0.3",
-    "mocha": "^2.5.3",
     "postcss": "^5.1.0",
     "postcss-import": "^8.1.2",
     "postcss-loader": "^0.9.1",
@@ -52,6 +51,8 @@
     "react-transform-hmr": "^1.0.4",
     "rimraf": "^2.5.3",
     "style-loader": "^0.13.1",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1",
