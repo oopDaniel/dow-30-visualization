@@ -7,6 +7,7 @@ import { Router, IndexRoute, Route, browserHistory } from 'react-router';
 import createLogger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 
+import rootSaga from './sagas/sagas';
 import * as reducers from './reducers/reducers';
 import App from './views/App/App';
 import Home from './views/Home/Home';
@@ -21,6 +22,8 @@ const sagaMiddleware = createSagaMiddleware();
 const createStoreWithMiddleware = applyMiddleware(sagaMiddleware, logger)(createStore);
 const store = createStoreWithMiddleware(reducer);
 const history = syncHistoryWithStore(browserHistory, store);
+
+sagaMiddleware.run(rootSaga);
 // Required for replaying actions from devtools to work
 // reduxRouterMiddleware.listenForReplays(store);
 //

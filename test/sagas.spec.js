@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars, no-constant-condition,
-  import/no-extraneous-dependencies, no-multi-spaces */
+  import/no-extraneous-dependencies, no-multi-spaces,
+  padded-blocks */
 
 import test from 'tape';
 import { takeLatest } from 'redux-saga';
@@ -61,6 +62,9 @@ test('fetching \'latest\' saga', (assert) => {
   actual = iterator.throw(err).value;
 
   assert.deepEqual(actual, expect, msg);
+
+
+  assert.ok(iterator.next().done, 'must finish');
 
 
   assert.end();

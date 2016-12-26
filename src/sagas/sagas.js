@@ -15,7 +15,7 @@ export function* fetchLatest(ids) {
   }
 }
 
-
+// Use call() instead of call takeLatest() directly for unit test
 export function* watchFetchLatest() {
   yield call(takeLatest, actions.FETCH_LATEST_REQUEST, fetchLatest);
 }
