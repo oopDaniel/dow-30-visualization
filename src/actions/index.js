@@ -1,7 +1,7 @@
 
-export const FETCH_TODAY_REQUEST = 'FETCH_TODAY_REQUEST';
-export const FETCH_TODAY_SUCCEEDED = 'FETCH_TODAY_SUCCEEDED';
-export const FETCH_TODAY_FAILED = 'FETCH_TODAY_FAILED';
+export const FETCH_LATEST_REQUEST = 'FETCH_LATEST_REQUEST';
+export const FETCH_LATEST_SUCCEEDED = 'FETCH_LATEST_SUCCEEDED';
+export const FETCH_LATEST_FAILED = 'FETCH_LATEST_FAILED';
 export const FETCH_TREND_REQUEST = 'FETCH_TREND_REQUEST';
 export const FETCH_TREND_SUCCEEDED = 'FETCH_TREND_SUCCEEDED';
 export const FETCH_TREND_FAILED = 'FETCH_TREND_FAILED';
@@ -31,26 +31,26 @@ export function removeStock(target) {
   };
 }
 
-export function fetchTodayRequest(target) {
+export function fetchLatestRequest(target) {
   return {
-    type: FETCH_TODAY_REQUEST,
+    type: FETCH_LATEST_REQUEST,
     target,
   };
 }
 
-export function fetchTodaySucceeded(payload) {
+export function fetchLatestSucceeded(response) {
   return {
-    type: FETCH_TODAY_SUCCEEDED,
-    payload,
-    receivedAt: Date.now(),
+    type: FETCH_LATEST_SUCCEEDED,
+    response,
+    // receivedAt: Date.now(),
   };
 }
 
-export function fetchTodayFailed(error) {
+export function fetchLatestFailed(error) {
   return {
-    type: FETCH_TODAY_FAILED,
+    type: FETCH_LATEST_FAILED,
     error,
-    receivedAt: Date.now(),
+    // receivedAt: Date.now(),
   };
 }
 
