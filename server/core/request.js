@@ -93,12 +93,13 @@ const retry = (options, id) => {
     : get(options, id);
 };
 
-const handleRejection = (reason) => (new Promise((resolve, reject) => {
+const handleRejection = reason => new Promise(
+  (resolve, reject) => {
     if (reason.statusCode === 429) {
       setTimeout(
         () => resolve(retry(reason.result, reason.id)),
         reason.delay,
-      );
+        );
     } else {
       reject({
         statusCode: -1,
@@ -106,5 +107,4 @@ const handleRejection = (reason) => (new Promise((resolve, reject) => {
       });
     }
   });
-);
 
