@@ -30,6 +30,16 @@ const configureStore = () => {
   // Create the store
   const store = createStore(reducer, enhancer);
 
+
+// // Enable Webpack hot module replacement for reducers
+//   if (module.hot) {
+//     module.hot.accept('./../reducers/reducers', () => {
+//       const nextRootReducer = require('./../reducers/reducers').default;
+//       store.replaceReducer(nextRootReducer);
+//     });
+//   }
+
+
   // init saga after the store created
   sagaMiddleware.run(rootSaga);
 
