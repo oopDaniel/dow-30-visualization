@@ -1,5 +1,7 @@
+/* eslint-disable */
 import React, { PropTypes, Component } from 'react';
 import styles from './Home.css';
+
 
 class Home extends Component {
 
@@ -14,6 +16,7 @@ class Home extends Component {
 }
 
 Home.propTypes = {
-}
+};
+/* eslint-enable */
 
 export default Home;

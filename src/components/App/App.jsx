@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import styles from './App.css';
 
+
+/* eslint-disable */
 class App extends Component {
 
   render() {
@@ -11,9 +13,11 @@ class App extends Component {
     );
   }
 }
-
+/* eslint-enable */
+/* eslint-disable react/forbid-prop-types */
 App.propTypes = {
   children: PropTypes.object,
 };
+/* eslint-enable */
 
 export default App;
