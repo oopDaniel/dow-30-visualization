@@ -1,7 +1,5 @@
 import {
-  FETCH_LATEST_REQUEST,
   FETCH_LATEST_SUCCEEDED,
-  FETCH_LATEST_FAILED,
 } from './../consts/actionTypes';
 
 
@@ -27,28 +25,12 @@ function addStock(prev, res) {
 }
 
 
-function latest(state = {
-  isFetching: false,
-  stocks: {},
-}, action) {
+function stocks(state = {}, action) {
   switch (action.type) {
-    case FETCH_LATEST_REQUEST: {
-      return {
-        ...state,
-        isFetching: true,
-      };
-    }
     case FETCH_LATEST_SUCCEEDED: {
       return {
         ...state,
-        isFetching: false,
-        stocks: addStock(state.stocks, action.response),
-      };
-    }
-    case FETCH_LATEST_FAILED: {
-      return {
-        ...state,
-        isFetching: false,
+        ...addStock(state, action.response),
       };
     }
     default: {
@@ -57,4 +39,4 @@ function latest(state = {
   }
 }
 
-export default latest;
+export default stocks;

@@ -2,14 +2,16 @@ import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
 import focus from './focus';
-import latest from './latest';
+import stocks from './stocks';
 import period from './period';
+import isFetching from './isFetching';
 
 
 const rootReducer = combineReducers({
   focus,
-  latest,
+  stocks,
   period,
+  isFetching,
   routing: routerReducer,
 });
 
