@@ -6,7 +6,7 @@ import focus from './../../src/reducers/focus';
 import { ADD_FOCUS, REMOVE_FOCUS } from './../../src/consts/actionTypes';
 
 
-test('stock reducer', (assert) => {
+test('Stock reducer', (assert) => {
   const msg    = 'must return an empty array initially';
   const expect = [];
   const actual = focus(undefined, '');
@@ -16,7 +16,7 @@ test('stock reducer', (assert) => {
 });
 
 
-test('stock reducer: ADD_FOCUS', (assert) => {
+test('Stock reducer: ADD_FOCUS', (assert) => {
   let msg    = 'must handle ADD_FOCUS';
   let mock   = 'PP';
   let expect = [mock];
@@ -41,7 +41,7 @@ test('stock reducer: ADD_FOCUS', (assert) => {
 });
 
 
-test('stock reducer: REMOVE_FOCUS', (assert) => {
+test('Stock reducer: REMOVE_FOCUS', (assert) => {
   let msg      = 'must handle REMOVE_FOCUS';
   const mock   = ['PEN', 'PINEAPPLE'];
   let expect   = ['PINEAPPLE'];

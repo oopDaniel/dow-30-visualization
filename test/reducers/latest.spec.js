@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, no-constant-condition,
   import/no-extraneous-dependencies, no-multi-spaces,
-  padded-blocks */
+  padded-blocks, key-spacing */
 import test from 'tape';
 import latest from './../../src/reducers/latest';
 import {
@@ -10,7 +10,7 @@ import {
 } from './../../src/consts/actionTypes';
 
 
-test('latest reducer: FETCH_LATEST_REQUEST', (assert) => {
+test('Latest reducer: FETCH_LATEST_REQUEST', (assert) => {
   const msg    = 'must set isFetching to true when requesting for the latest';
   const expect = true;
   const actual = latest(undefined, { type: FETCH_LATEST_REQUEST }).isFetching;
@@ -20,7 +20,7 @@ test('latest reducer: FETCH_LATEST_REQUEST', (assert) => {
 });
 
 
-test('latest reducer: FETCH_LATEST_SUCCEEDED', (assert) => {
+test('Latest reducer: FETCH_LATEST_SUCCEEDED', (assert) => {
   const prev      = { isFetching: true, stocks: {} };
   const timestamp = Date.now();
   const record    = {
@@ -41,9 +41,9 @@ test('latest reducer: FETCH_LATEST_SUCCEEDED', (assert) => {
   };
   const newStock  = 'APPLEPEN';
   const newStock2 = 'PINEAPPLEPEN';
-  const response  = [{...record, Name: newStock}];
-  const response2 = [{...record, Name: newStock2}];
-  const response3 = [{...record2, Name: newStock}];
+  const response  = [{ ...record, Name: newStock }];
+  const response2 = [{ ...record, Name: newStock2 }];
+  const response3 = [{ ...record2, Name: newStock }];
 
 
   let msg = 'must set isFetching to false after fetching';
@@ -54,7 +54,7 @@ test('latest reducer: FETCH_LATEST_SUCCEEDED', (assert) => {
 
 
   msg = 'must insert the brand new stock into the stockList';
-  expect = { APPLEPEN: [ record ]};
+  expect = { APPLEPEN: [record] };
   let afterSuccess = latest(undefined, { type: FETCH_LATEST_SUCCEEDED, response });
   actual = afterSuccess.stocks;
 
@@ -63,12 +63,12 @@ test('latest reducer: FETCH_LATEST_SUCCEEDED', (assert) => {
 
   msg = 'must insert the different record into proper place';
   expect = {
-    APPLEPEN:     [ record ],
-    PINEAPPLEPEN: [ record ],
+    APPLEPEN:     [record],
+    PINEAPPLEPEN: [record],
   };
   afterSuccess = latest(afterSuccess, {
     type: FETCH_LATEST_SUCCEEDED,
-    response: response2
+    response: response2,
   });
   actual = afterSuccess.stocks;
 
@@ -76,17 +76,17 @@ test('latest reducer: FETCH_LATEST_SUCCEEDED', (assert) => {
 
 
   msg = 'must proccess record with identical name correctly';
-  expect = { APPLEPEN: [ record, record2 ], PINEAPPLEPEN: [ record ]};
+  expect = { APPLEPEN: [record, record2], PINEAPPLEPEN: [record] };
   actual = latest(afterSuccess, {
     type: FETCH_LATEST_SUCCEEDED,
-    response: response3
+    response: response3,
   }).stocks;
 
   assert.deepEqual(actual, expect, msg);
   assert.end();
 });
 
-test('latest reducer: FETCH_LATEST_FAILED', (assert) => {
+test('Latest reducer: FETCH_LATEST_FAILED', (assert) => {
   const prev      = { isFetching: true, stocks: { HELLO: [] } };
 
 

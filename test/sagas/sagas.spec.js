@@ -14,7 +14,7 @@ import {
 } from './../../src/sagas/sagas';
 
 
-test('watcher for fetching \'latest\' request saga', (assert) => {
+test('Watcher for fetching \'latest\' request saga', (assert) => {
   const iterator = watchFetchLatest();
   const expect   = call(takeLatest, types.FETCH_LATEST_REQUEST, fetchLatest);
   const actual   = iterator.next().value;
@@ -25,7 +25,7 @@ test('watcher for fetching \'latest\' request saga', (assert) => {
 });
 
 
-test('fetching \'latest\' saga', (assert) => {
+test('Fetching \'latest\' saga', (assert) => {
 
   let msg    = 'must call getLatest API as the initial step';
   let mock   = ['AA', 'BA'];
