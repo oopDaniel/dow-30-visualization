@@ -5,17 +5,18 @@
 import test from 'tape';
 import { takeLatest } from 'redux-saga';
 import { call, put } from 'redux-saga/effects';
-import * as actions from './../src/actions';
-import api from './../src/services';
+import * as actions from './../../src/actions';
+import * as types from './../../src/consts/actionTypes';
+import api from './../../src/services';
 import {
   watchFetchLatest,
   fetchLatest,
-} from './../src/sagas/sagas';
+} from './../../src/sagas/sagas';
 
 
 test('watcher for fetching \'latest\' request saga', (assert) => {
   const iterator = watchFetchLatest();
-  const expect   = call(takeLatest, actions.FETCH_LATEST_REQUEST, fetchLatest);
+  const expect   = call(takeLatest, types.FETCH_LATEST_REQUEST, fetchLatest);
   const actual   = iterator.next().value;
   const msg      = 'must take every \'latest\' request and call fetching func';
 
@@ -56,7 +57,7 @@ test('fetching \'latest\' saga', (assert) => {
   };
   const err = 'something bad happened...';
   expect = put({
-    type: actions.FETCH_LATEST_FAILED,
+    type: types.FETCH_LATEST_FAILED,
     error: err,
   });
   actual = iterator.throw(err).value;

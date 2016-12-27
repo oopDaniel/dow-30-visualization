@@ -1,2 +1,2 @@
 
-import './sagas.spec';
+import './sagas/sagas.spec';

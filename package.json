@@ -12,8 +12,8 @@
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.prod.js --color -p",
     "start": "cross-env NODE_ENV=dev babel-node server/index",
     "lint": "eslint src",
-    "pretest": "npm run lint",
-    "test": "cross-env NODE_ENV=test babel-node test/index.js | tap-spec"
+    "test": "cross-env NODE_ENV=test babel-node test/index.js | tap-spec ",
+    "tdd": "nodemon -q -x \"npm test\""
   },
   "keywords": [
     "dow 30",
@@ -45,6 +45,7 @@
     "eventsource-polyfill": "^0.9.6",
     "file-loader": "^0.9.0",
     "lost": "^7.0.3",
+    "nodemon": "^1.11.0",
     "postcss": "^5.1.0",
     "postcss-import": "^8.1.2",
     "postcss-loader": "^0.9.1",
