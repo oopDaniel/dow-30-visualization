@@ -4,8 +4,8 @@ export const FETCH_LATEST_FAILED = 'FETCH_LATEST_FAILED';
 export const FETCH_TREND_REQUEST = 'FETCH_TREND_REQUEST';
 export const FETCH_TREND_SUCCEEDED = 'FETCH_TREND_SUCCEEDED';
 export const FETCH_TREND_FAILED = 'FETCH_TREND_FAILED';
-export const ADD_STOCK = 'ADD_STOCK';
-export const REMOVE_STOCK = 'REMOVE_STOCK';
+export const ADD_FOCUS = 'ADD_FOCUS';
+export const REMOVE_FOCUS = 'REMOVE_FOCUS';
 export const SWITCH_PERIOD = 'SWITCH_PERIOD';
 // export const SEARCH = 'SEARCH';
 //
