@@ -42,7 +42,7 @@ test('fetching \'latest\' saga', (assert) => {
     open: 10,
     close: 20,
   };
-  const getMock = () => ({ response: { ...mock } });
+  const getMock = () => (mock);
   expect = put(actions.fetchLatestSucceeded(mock));
   actual = iterator.next(getMock()).value;
 

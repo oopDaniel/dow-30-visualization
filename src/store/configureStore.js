@@ -14,7 +14,7 @@ const reducer = combineReducers({
 });
 
 
-export const configureStore = () => {
+const configureStore = () => {
   const sagaMiddleware = createSagaMiddleware();
   const middlewares    = [sagaMiddleware];
 
@@ -36,3 +36,5 @@ export const configureStore = () => {
 
   return store;
 };
+
+export default configureStore;

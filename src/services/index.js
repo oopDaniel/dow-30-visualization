@@ -14,7 +14,7 @@ const API = {
     }
 
     return fetch(`${url}api/latest${param}`)
-      .then( response => ({ response: response.json() }) )
+      .then( response => response.json() )
       .catch( error => ({ error }) );
   },
 };
