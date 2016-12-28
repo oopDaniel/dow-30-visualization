@@ -14,13 +14,6 @@ export function addStock(target) {
   };
 }
 
-export function removeStock(target) {
-  return {
-    type: types.REMOVE_STOCK,
-    target,
-  };
-}
-
 export function fetchLatestRequest(target) {
   return {
     type: types.FETCH_LATEST_REQUEST,
@@ -68,9 +61,24 @@ export function fetchTrendFailed(error) {
   };
 }
 
-export function loadPersisted(persisted) {
+export function loadFocus(persisted) {
   return {
     type: types.LOAD_FOCUS,
     data: persisted,
   };
 }
+
+export function addFocus(target) {
+  return {
+    type: types.LOAD_FOCUS,
+    target,
+  };
+}
+
+export function removeFocus(target) {
+  return {
+    type: types.REMOVE_FOCUS,
+    target,
+  };
+}
+

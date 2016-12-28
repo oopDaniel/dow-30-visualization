@@ -6,7 +6,7 @@ import test from 'tape';
 import { takeLatest } from 'redux-saga';
 import { call, put, select, take, fork } from 'redux-saga/effects';
 import * as actions from './../../src/actions';
-import { focusedBySelector } from './../../src/reducers/selectors';
+import { getFocused } from './../../src/reducers/selectors';
 import * as types from './../../src/consts/actionTypes';
 import api from './../../src/services/API';
 import { loadState, saveState } from './../../src/services/localStorage';
@@ -42,7 +42,7 @@ test('Initial state saga', (assert) => {
 
   const mock = ['PINEAPPLE', 'PEN'];
   msg    = 'must update the focused using either API result or predefined data';
-  expect = put(actions.loadPersisted(mock));
+  expect = put(actions.loadFocus(mock));
   actual = iterator.next(mock.join(',')).value;
 
   assert.deepEqual(actual, expect, msg);
@@ -98,7 +98,7 @@ test('Watcher saga for changes of the focused', (assert) => {
 
 
   msg    = 'must select the new change of the focused';
-  expect = select(focusedBySelector);
+  expect = select(getFocused);
   actual = iterator.next().value;
 
   assert.deepEqual(actual, expect, msg);
@@ -192,7 +192,7 @@ test('Fetching \'latest\' saga', (assert) => {
 // test('Watcher for changes of the focused', (assert) => {
 //   const iterator = nextFocusedChange();
 //   let msg    = 'must select the change of the focused';
-//   let expect = select(focusedBySelector);
+//   let expect = select(getFocused);
 //   let actual = iterator.next().value;
 
 //   assert.deepEqual(actual, expect, msg);
@@ -206,7 +206,7 @@ test('Fetching \'latest\' saga', (assert) => {
 
 
 //   msg    = 'must select the new change of the focused';
-//   expect = select(focusedBySelector);
+//   expect = select(getFocused);
 //   actual = iterator.next().value;
 
 //   assert.deepEqual(actual, expect, msg);

@@ -6,7 +6,7 @@ import { loadState, saveState } from './../services/localStorage';
 import * as types from './../consts/actionTypes';
 import * as STOCKS from './../consts/stocks';
 import * as actions from './../actions';
-import { focusedBySelector } from './../reducers/selectors';
+import { getFocused } from './../reducers/selectors';
 
 
 export function* fetchLatest(ids) {
@@ -33,10 +33,10 @@ export function* watchFetchLatest() {
 
 export function* nextFocusedChange() {
   while (true) {
-    // const prevFocus = yield select(focusedBySelector);
+    // const prevFocus = yield select(getFocused);
     yield take([types.ADD_FOCUS, types.REMOVE_FOCUS]);
 
-    const focused = yield select(focusedBySelector);
+    const focused = yield select(getFocused);
     const shouldCallAPI = focused && focused.length > 0;
 
     if (shouldCallAPI) {
@@ -64,7 +64,7 @@ export function* init() {
 
   // If no persisted data, load all stocks instead
   const focused = persisted ? persisted.split(',') : STOCKS;
-  yield put( actions.loadPersisted(focused) );
+  yield put( actions.loadFocus(focused) );
   yield put( actions.fetchLatestRequest(focused) );
 }
 
