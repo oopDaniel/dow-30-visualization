@@ -1,10 +1,11 @@
+import { combineReducers } from 'redux';
 import {
   FETCH_LATEST_SUCCEEDED,
 } from './../consts/actionTypes';
 
 
-function addStock(prev, res) {
-  const result = { ...prev };
+function addStock(state, res) {
+  const result = { ...state };
   res.forEach((stock) => {
     let targetArr = result[stock.Name];
 
@@ -25,18 +26,36 @@ function addStock(prev, res) {
 }
 
 
-function stocks(state = {}, action) {
+const byName = (state = {}, action) => {
   switch (action.type) {
     case FETCH_LATEST_SUCCEEDED: {
-      return {
-        ...state,
-        ...addStock(state, action.response),
-      };
+      return addStock(state, action.response);
     }
     default: {
       return state;
     }
   }
-}
+};
+
+const allNames = (state = [], action) => {
+  switch (action.type) {
+    case FETCH_LATEST_SUCCEEDED: {
+      const names = [
+        ...state,
+        ...action.response.map(s => s.Name),
+      ];
+      return Array.from(new Set(names));
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+
+const stocks = combineReducers({
+  byName,
+  allNames,
+});
 
 export default stocks;

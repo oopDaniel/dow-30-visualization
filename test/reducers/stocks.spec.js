@@ -35,39 +35,64 @@ test('Stock reducer', (assert) => {
   const response3 = [{ ...record2, Name: newStock }];
 
 
-  let msg = 'must insert the brand new stock into the stockList';
-  let expect = { APPLEPEN: [record] };
-  let actual = stocks(undefined, { type: FETCH_LATEST_SUCCEEDED, response });
+  let msg       = 'must insert the brand new stock into the stock::byName';
+  let processed = stocks(undefined, { type: FETCH_LATEST_SUCCEEDED, response });
+  let expect    = { APPLEPEN: [record] };
+  let actual    = processed.byName;
 
   assert.deepEqual(actual, expect, msg);
 
 
-  msg = 'must insert the different record into proper place';
-  expect = {
+  msg    = 'must insert the brand new stock into the stock::allNames';
+  expect = ['APPLEPEN'];
+  actual = processed.allNames;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  msg       = 'must insert the different record into proper place (byName)';
+  expect    = {
     APPLEPEN:     [record],
     PINEAPPLEPEN: [record],
   };
-  actual = stocks(actual, {
+  processed = stocks(processed, {
     type: FETCH_LATEST_SUCCEEDED,
     response: response2,
   });
+  actual    = processed.byName;
 
   assert.deepEqual(actual, expect, msg);
 
 
-  msg = 'must proccess record with identical name correctly';
-  expect = { APPLEPEN: [record, record2], PINEAPPLEPEN: [record] };
-  actual = stocks(actual, {
+  msg       = 'must insert the different record into proper place (allNames)';
+  expect    = ['APPLEPEN', 'PINEAPPLEPEN'];
+  actual    = processed.allNames;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  msg       = 'must proccess record with identical name correctly (byName)';
+  expect    = { APPLEPEN: [record, record2], PINEAPPLEPEN: [record] };
+  processed = stocks(processed, {
     type: FETCH_LATEST_SUCCEEDED,
     response: response3,
   });
+  actual    = processed.byName;
 
   assert.deepEqual(actual, expect, msg);
+
+
+  msg    = 'must proccess record with identical name correctly (allNames)';
+  expect = ['APPLEPEN', 'PINEAPPLEPEN'];
+  actual = processed.allNames;
+
+  assert.deepEqual(actual, expect, msg);
+
   assert.end();
 });
 
 test('Latest reducer: FETCH_LATEST_FAILED', (assert) => {
-  const prev   = { PEN: [] };
+  const prev   = { allNames: ['PEN'], byName: { PEN: [] } };
 
   const msg    = 'must keep the previous state';
   const expect = prev;
