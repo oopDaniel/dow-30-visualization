@@ -67,3 +67,10 @@ export function fetchTrendFailed(error) {
     receivedAt: Date.now(),
   };
 }
+
+export function loadPersisted(persisted) {
+  return {
+    type: types.LOAD_FOCUS,
+    data: persisted,
+  };
+}

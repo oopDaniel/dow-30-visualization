@@ -2,7 +2,9 @@
 import { call, fork, put, select, take } from 'redux-saga/effects';
 // import { takeLatest } from 'redux-saga';
 import api from './../services/API';
+import { loadState, saveState } from './../services/localStorage';
 import * as types from './../consts/actionTypes';
+import * as STOCKS from './../consts/stocks';
 import * as actions from './../actions';
 import { focusedBySelector } from './../reducers/selectors';
 
@@ -21,6 +23,7 @@ export function* fetchLatest(ids) {
 //   yield call(takeLatest, types.FETCH_LATEST_REQUEST, fetchLatest);
 // }
 
+
 export function* nextFocusedChange() {
   while (true) {
     // const prevFocus = yield select(focusedBySelector);
@@ -36,6 +39,7 @@ export function* nextFocusedChange() {
       yield [];
     }
 
+    yield call(saveState, focused.join(','));
     // ADD_FOCUS or REMOVE_FOCUS will always make the array length different
     // const hasChanged = Array.isArray(prevFocus) &&
     //   Array.isArray(newFocus) &&
@@ -46,6 +50,20 @@ export function* nextFocusedChange() {
     // }
   }
 }
+
+
+export function* init() {
+  const persisted = yield call(loadState);
+
+  // If no persisted data, load all stocks instead
+  const focused = persisted ? persisted.split(',') : STOCKS;
+
+  yield fork(fetchLatest, focused);
+  yield put( actions.loadPersisted(focused) );
+}
+
+
 export default function* rootSaga() {
+  yield fork(init);
   yield fork(nextFocusedChange);
 }

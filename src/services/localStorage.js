@@ -2,7 +2,7 @@
 
 export const loadState = () => {
   try {
-    const prevState = localStorage.getItem('state');
+    const prevState = localStorage.getItem('dow30-state');
     if (prevState === null) {
       return undefined;
     }
@@ -15,7 +15,7 @@ export const loadState = () => {
 export const saveState = (state) => {
   try {
     const curState = JSON.stringify(state);
-    localStorage.setItem('state', curState);
+    localStorage.setItem('dow30-state', curState);
   } catch (err) {
     // Do nothing
   }

@@ -3,13 +3,31 @@
   padded-blocks */
 import test from 'tape';
 import focus from './../../src/reducers/focus';
-import { ADD_FOCUS, REMOVE_FOCUS } from './../../src/consts/actionTypes';
+import {
+  ADD_FOCUS,
+  REMOVE_FOCUS,
+  LOAD_FOCUS,
+} from './../../src/consts/actionTypes';
 
 
 test('Stock reducer', (assert) => {
   const msg    = 'must return an empty array initially';
   const expect = [];
   const actual = focus(undefined, '');
+
+  assert.deepEqual(actual, expect, msg);
+  assert.end();
+});
+
+
+test('Stock reducer: LOAD_FOCUS', (assert) => {
+  const msg    = 'must handle LOAD_FOCUS';
+  const mock   = ['PEN', 'PINEAPPLE'];
+  const expect = mock;
+  const actual = focus(undefined, {
+    type: LOAD_FOCUS,
+    data: mock,
+  });
 
   assert.deepEqual(actual, expect, msg);
   assert.end();

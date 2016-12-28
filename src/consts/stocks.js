@@ -1,4 +1,4 @@
-export const stocks = [
+const stocks = [
   'AA',
   'AXP',
   'BA',
@@ -30,3 +30,5 @@ export const stocks = [
   // 'WMT',
   // 'XOM',
 ];
+
+export default stocks;
