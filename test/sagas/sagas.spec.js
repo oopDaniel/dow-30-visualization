@@ -11,9 +11,10 @@ import * as types from './../../src/consts/actionTypes';
 import api from './../../src/services/API';
 import { loadState, saveState } from './../../src/services/localStorage';
 import {
-  // watchFetchLatest,
+  watchFetchLatest,
   init,
   nextFocusedChange,
+  callFetchLatest,
   fetchLatest,
 } from './../../src/sagas/sagas';
 
@@ -38,21 +39,51 @@ test('Initial state saga', (assert) => {
 
   assert.deepEqual(actual, expect, msg);
 
-  msg    = 'delegate to fetchLatest with the API result';
-  expect = fork(fetchLatest, ['PINEAPPLE', 'PEN']);
-  actual = iterator.next('PINEAPPLE,PEN').value;
-
-  assert.deepEqual(actual, expect, msg);
-
 
   const mock = ['PINEAPPLE', 'PEN'];
-  const getMock = () => (mock);
-  msg    = 'must init the focused using either API result or predefined data';
+  msg    = 'must update the focused using either API result or predefined data';
   expect = put(actions.loadPersisted(mock));
-  actual = iterator.next(getMock()).value;
+  actual = iterator.next(mock.join(',')).value;
 
   assert.deepEqual(actual, expect, msg);
 
+
+  msg    = 'must request for the latest stock according to the focused';
+  expect = put(actions.fetchLatestRequest(mock));
+  actual = iterator.next().value;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  // msg    = 'delegate to fetchLatest with the API result';
+  // expect = fork(fetchLatest, ['PINEAPPLE', 'PEN']);
+  // actual = iterator.next('PINEAPPLE,PEN').value;
+
+  // assert.deepEqual(actual, expect, msg);
+
+  assert.end();
+});
+
+
+test('Watcher for fetching \'latest\' request saga', (assert) => {
+  const msg      = 'must take every \'latest\' request and call according func';
+  const iterator = watchFetchLatest();
+  const expect   = call(takeLatest, types.FETCH_LATEST_REQUEST, callFetchLatest);
+  const actual   = iterator.next().value;
+
+  assert.deepEqual(actual, expect, msg);
+  assert.end();
+});
+
+
+test('Fetching \'latest\' caller saga', (assert) => {
+  const msg      = 'must call fetching func with args';
+  const mock     = { target: ['APPLE', 'PEN'] };
+  const iterator = callFetchLatest(mock);
+  const expect   = fork(fetchLatest, ['APPLE', 'PEN']);
+  const actual   = iterator.next().value;
+
+  assert.deepEqual(actual, expect, msg);
   assert.end();
 });
 
@@ -154,17 +185,6 @@ test('Fetching \'latest\' saga', (assert) => {
 // after(' - Saga After - ', (assert) => {
 //   if (backup) saveState(backup);
 //   assert.pass('Restoring localStorage...');
-//   assert.end();
-// });
-
-
-// test('Watcher for fetching \'latest\' request saga', (assert) => {
-//   const iterator = watchFetchLatest();
-//   const msg      = 'must take every \'latest\' request and call fetching func';
-//   const expect   = call(takeLatest, types.FETCH_LATEST_REQUEST, fetchLatest);
-//   const actual   = iterator.next().value;
-
-//   assert.deepEqual(actual, expect, msg);
 //   assert.end();
 // });
 

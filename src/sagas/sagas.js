@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-condition, space-in-parens */
 import { call, fork, put, select, take } from 'redux-saga/effects';
-// import { takeLatest } from 'redux-saga';
+import { takeLatest } from 'redux-saga';
 import api from './../services/API';
 import { loadState, saveState } from './../services/localStorage';
 import * as types from './../consts/actionTypes';
@@ -18,10 +18,17 @@ export function* fetchLatest(ids) {
   }
 }
 
+
+export function* callFetchLatest(action) {
+  if (action && action.target) {
+    yield fork(fetchLatest, action.target);
+  }
+}
+
 // Use call() instead of call takeLatest() directly for unit test
-// export function* watchFetchLatest() {
-//   yield call(takeLatest, types.FETCH_LATEST_REQUEST, fetchLatest);
-// }
+export function* watchFetchLatest() {
+  yield call(takeLatest, types.FETCH_LATEST_REQUEST, callFetchLatest);
+}
 
 
 export function* nextFocusedChange() {
@@ -57,13 +64,13 @@ export function* init() {
 
   // If no persisted data, load all stocks instead
   const focused = persisted ? persisted.split(',') : STOCKS;
-
-  yield fork(fetchLatest, focused);
   yield put( actions.loadPersisted(focused) );
+  yield put( actions.fetchLatestRequest(focused) );
 }
 
 
 export default function* rootSaga() {
   yield fork(init);
   yield fork(nextFocusedChange);
+  yield fork(watchFetchLatest);
 }

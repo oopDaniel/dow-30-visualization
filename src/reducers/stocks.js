@@ -40,11 +40,11 @@ const byName = (state = {}, action) => {
 const allNames = (state = [], action) => {
   switch (action.type) {
     case FETCH_LATEST_SUCCEEDED: {
-      const names = [
+      const stockNames = [
         ...state,
         ...action.response.map(s => s.Name),
       ];
-      return Array.from(new Set(names));
+      return Array.from(new Set(stockNames));
     }
     default: {
       return state;
@@ -52,6 +52,10 @@ const allNames = (state = [], action) => {
   }
 };
 
+
+/**
+ * TODO: Add normalized period for each stock
+ */
 
 const stocks = combineReducers({
   byName,
