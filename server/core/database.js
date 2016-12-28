@@ -78,7 +78,10 @@ export default class Database {
     return new Promise( (resolve, reject) => {
       this.db.serialize( () => {
         this.db.all(statement, (err, result) => {
-          if (err) reject(err);
+          if (err) {
+            reject(err);
+            logger.error('<DB query> ', err);
+          }
           resolve(result);
         });
       });

@@ -6,13 +6,20 @@ import CONFIG from './../../config';
 
 const router = express.Router();
 
-let logger   = console;
+let logger = console;
 if (CONFIG.log.useLogger) {
-  logger     = require('log4js').getLogger('cheese');
+  logger = require('log4js').getLogger('cheese');
 }
 
 
 router.get('/api/latest', (req, res) => {
+  const targetStocks = req.query.target;
+  // Use '' to brace each stockName
+  const stockStr = targetStocks
+    .split(',')
+    .map(s => `'${s}'`)
+    .join(',');
+
   const stmt = `
     SELECT *
     FROM  dow30 t1
@@ -20,6 +27,7 @@ router.get('/api/latest', (req, res) => {
     (
         SELECT Max(Date) Date, Name
         FROM   dow30
+        WHERE Name IN (${stockStr})
         GROUP BY name
     ) AS t2
         ON t1.Name = t2.Name
@@ -32,7 +40,7 @@ router.get('/api/latest', (req, res) => {
     res.end(JSON.stringify(result));
   })
   .catch((err) => {
-    logger.log(err);
+    logger.error(err);
     const errMsg = { err };
     res.end(JSON.stringify(errMsg));
   });
