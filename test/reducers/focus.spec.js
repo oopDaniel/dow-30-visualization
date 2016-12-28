@@ -28,6 +28,17 @@ test('Stock reducer: ADD_FOCUS', (assert) => {
   assert.deepEqual(actual, expect, msg);
 
 
+  msg    = 'must ignore the duplicate stock';
+  mock   = 'PP';
+  expect = [mock];
+  actual = focus(['PP'], {
+    type: ADD_FOCUS,
+    target: mock,
+  });
+
+  assert.deepEqual(actual, expect, msg);
+
+
   msg    = 'must NOT mutate the original array';
   mock   = 'AP';
   expect = actual.concat(mock);
