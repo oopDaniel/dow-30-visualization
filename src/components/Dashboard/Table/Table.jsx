@@ -25,5 +25,5 @@ const mapStateToProps = state => ({
   stocks: state.stocks,
 });
 
-const connectedTable = connect(mapStateToProps)(Table);
+const connectedTable = connect(mapStateToProps, null)(Table);
 export default connectedTable;

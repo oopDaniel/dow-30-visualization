@@ -1,17 +1,9 @@
-import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
-import { routerReducer } from 'react-router-redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 
-import * as reducers from './../reducers/reducers';
+import rootReducer from './../reducers/reducers';
 import rootSaga from './../sagas/sagas';
-
-
-// Reducers
-const reducer = combineReducers({
-  ...reducers,
-  routing: routerReducer,
-});
 
 
 const configureStore = () => {
@@ -28,7 +20,7 @@ const configureStore = () => {
   );
 
   // Create the store
-  const store = createStore(reducer, enhancer);
+  const store = createStore(rootReducer, enhancer);
 
 
 // // Enable Webpack hot module replacement for reducers

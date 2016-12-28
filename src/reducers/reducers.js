@@ -7,7 +7,7 @@ import period from './period';
 import isFetching from './isFetching';
 
 
-const rootReducer = combineReducers({
+export default combineReducers({
   focus,
   stocks,
   period,
@@ -15,4 +15,3 @@ const rootReducer = combineReducers({
   routing: routerReducer,
 });
 
-export default rootReducer;
