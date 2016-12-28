@@ -18,7 +18,6 @@ test('Stock reducer', (assert) => {
     High:   200,
     Low:    100,
     Volume: 10,
-    Date:   timestamp,
   };
   const record2   = {
     Open:   200,
@@ -26,18 +25,22 @@ test('Stock reducer', (assert) => {
     High:   200,
     Low:    200,
     Volume: 200,
-    Date:   timestamp + 1,
   };
   const newStock  = 'APPLEPEN';
   const newStock2 = 'PINEAPPLEPEN';
-  const response  = [{ ...record, Name: newStock }];
-  const response2 = [{ ...record, Name: newStock2 }];
-  const response3 = [{ ...record2, Name: newStock }];
+  const response  = [{ ...record, Name: newStock, Date: timestamp }];
+  const response2 = [{ ...record, Name: newStock2, Date: timestamp }];
+  const response3 = [{ ...record2, Name: newStock, Date: timestamp + 1 }];
 
 
   let msg       = 'must insert the brand new stock into the stock::byName';
   let processed = stocks(undefined, { type: FETCH_LATEST_SUCCEEDED, response });
-  let expect    = { APPLEPEN: [record] };
+  let expect    = {
+    APPLEPEN: {
+      latest: [timestamp, timestamp],
+      data: { [timestamp]: record },
+    },
+  };
   let actual    = processed.byName;
 
   assert.deepEqual(actual, expect, msg);
@@ -52,8 +55,14 @@ test('Stock reducer', (assert) => {
 
   msg       = 'must insert the different record into proper place (byName)';
   expect    = {
-    APPLEPEN:     [record],
-    PINEAPPLEPEN: [record],
+    APPLEPEN: {
+      latest: [timestamp, timestamp],
+      data: { [timestamp]: record },
+    },
+    PINEAPPLEPEN: {
+      latest: [timestamp, timestamp],
+      data: { [timestamp]: record },
+    },
   };
   processed = stocks(processed, {
     type: FETCH_LATEST_SUCCEEDED,
@@ -72,7 +81,21 @@ test('Stock reducer', (assert) => {
 
 
   msg       = 'must proccess record with identical name correctly (byName)';
-  expect    = { APPLEPEN: [record, record2], PINEAPPLEPEN: [record] };
+  expect    = {
+    APPLEPEN: {
+      latest: [timestamp, timestamp + 1],
+      data: {
+        [timestamp]: record,
+        [timestamp + 1]: record2,
+      },
+    },
+    PINEAPPLEPEN: {
+      latest: [timestamp, timestamp],
+      data: {
+        [timestamp]: record,
+      },
+    },
+  };
   processed = stocks(processed, {
     type: FETCH_LATEST_SUCCEEDED,
     response: response3,
