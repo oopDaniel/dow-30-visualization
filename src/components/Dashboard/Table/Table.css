@@ -1,0 +1,6 @@
+:local .container {
+  margin: 2rem auto;
+  background-color: wheat;
+  width: 60%;
+  height: 500px;
+}

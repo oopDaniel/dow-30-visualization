@@ -1,3 +1,8 @@
 :local .container {
   min-height: 100vh;
 }
+
+:local .search {
+  margin: 2rem 0;
+  padding-top: 5rem;
+}

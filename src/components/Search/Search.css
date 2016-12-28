@@ -1,0 +1,30 @@
+$light-grey: #e2e2e2;
+$light-yellow: #fa0;
+
+
+
+:local .container {
+  margin: 2rem 0;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+};
+
+:local .searchbar {
+  width: 80%;
+  max-width: 800px;
+  border: 2px solid $light-grey;
+  background-color: transparent;
+  line-height: 2;
+  padding: 0 2rem;
+  border-radius: 5px;
+  font-size: 20px;
+  -webkit-appearance: none;
+
+  &:focus {
+    border-color: $light-yellow;
+    outline: 0;
+  };
+};
+
+
