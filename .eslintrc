@@ -13,6 +13,7 @@
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "no-multi-spaces": [1, { "exceptions": { "VariableDeclarator": true } }],
-    "import/prefer-default-export": [1]
+    "import/prefer-default-export": [1],
+    "react/forbid-prop-types": [0]
   }
 }
