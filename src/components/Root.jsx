@@ -6,7 +6,7 @@ import App from './App/App';
 import Dashboard from './Dashboard/Dashboard';
 import Trend from './Trend/Trend';
 import Detail from './Detail/Detail';
-import './styles.css';
+import './../styles/styles.css';
 
 const propTypes = {
   store: PropTypes.object.isRequired,
@@ -20,7 +20,7 @@ const Root = ({ store, history }) => (
         <IndexRoute component={Dashboard} />
         <Route path="/trend" component={Trend} />
       </Route>
-      <Route path="/detail" component={Detail} />
+      <Route path="/detail/:name" component={Detail} />
     </Router>
   </Provider>
 );

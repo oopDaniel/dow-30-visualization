@@ -1,7 +1,4 @@
-$light-grey: #e2e2e2;
-$light-yellow: #fa0;
-
-
+@import './../../styles/color.css';
 
 :local .container {
   margin: 2rem 0;
@@ -13,16 +10,17 @@ $light-yellow: #fa0;
 :local .searchbar {
   width: 80%;
   max-width: 800px;
-  border: 2px solid $light-grey;
+  border: 2px solid $search-border;
   background-color: transparent;
   line-height: 2;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
   border-radius: 5px;
   font-size: 20px;
   -webkit-appearance: none;
+  color: $search-placeholder;
 
   &:focus {
-    border-color: $light-yellow;
+    border-color: $search-border-active;
     outline: 0;
   };
 };

@@ -1,0 +1,41 @@
+@import './../../../styles/color.css';
+
+
+:local .container {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  border-bottom: 1px solid $table-border;
+  border-radius: .5rem;
+  cursor: default;
+
+  > * {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  a {
+    color: $table-stock-name;
+    text-decoration: none;
+    transition: color .1s;
+
+    &:hover {
+      color: $table-stock-name-active;
+    }
+  }
+}
+
+:local .title {
+  flex: 0 0 10%;
+}
+
+:local .cross_color {
+  background: $table-cross;
+}
+
+:local .border_title {
+  color: $dashboard-title-text;
+  border-top: 1px solid $table-border;
+  border-right: 1px solid $table-border;
+}
