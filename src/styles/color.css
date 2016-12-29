@@ -1,20 +1,63 @@
+
+/***********************************
+      Predefined theme colors
+***********************************/
+
+/*
+$theme-primary: #337ab7;
+$theme-primary-border: #2e6da4;
+$theme-primary-hover: #286090;
+$theme-primary-border-hover: #204d74;
+
+$theme-success: #52BD7E;
+$theme-success-border: #4cae4c;
+$theme-success-hover: #39A465;
+$theme-success-border-hover: #398439;
+*/
+$theme-info: #5bc0de;
+/*$theme-info-border: #46b8da;
+$theme-info-hover: #31b0d5;
+$theme-info-border-hover: #269abc;
+*/
+$theme-warning: #f0ad4e;
+/*$theme-warning-border: #eea236;
+$theme-warning-hover: #ec971f;
+$theme-warning-border-hover: #d58512;*/
+/*
+$theme-danger: #d9534f;
+$theme-danger-border: #d43f3a;
+$theme-danger-hover: #c9302c;
+$theme-danger-border-hover: #ac2925;
+*/
+
+
+/***********************************
+      Color of Components
+***********************************/
+
+
 $search-border: #e2e2e2;
 $search-border-active: #1FC2F9;
 $search-placeholder: #92989b;
-$search-sugest-bg: #f6f7fa;
+$search-sugest-bg: #F9FAFD;
 $search-sugest-row-bg-active: #1FC2F9;
-$search-sugest-row-border: #e0e0e4;
+$search-sugest-row-border: #E5E5E9;
 $search-sugest-row-text: #6a7f8e;
 $search-sugest-row-text-active: #fff;
+$search-scrollbar: darkgrey;
 
+$tag-text: #6a7f8e;
+$tag-close: #e2e2e2;
+$tag-border: $theme-info;
+$tag-border-active: $theme-warning;
 
 $table-cross: #f6f7fa;
 $table-border: #e5ebee;
 $table-stock-name: cornflowerblue;
 $table-stock-name-active: lightskyblue;
 
-/*$dashboard-text: steelblue;*/
 
 $dashboard-title-text: #4a525b;
 $dashboard-text: #6a7f8e;
+
 

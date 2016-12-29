@@ -1,7 +1,8 @@
 /* eslint-disable */
 import React, { PropTypes, Component } from 'react';
-import styles from './Dashboard.css';
+import { connect } from 'react-redux';
 
+import styles from './Dashboard.css';
 import Chart from './Chart/Chart';
 import Table from './Table/Table';
 
@@ -22,4 +23,12 @@ Dashboard.propTypes = {
 };
 /* eslint-enable */
 
-export default Dashboard;
+
+const mapStateToProps = state => ({
+  focus: state.focus,
+  search: state.search,
+});
+
+const connectedDashboard = connect(mapStateToProps, null)(Dashboard);
+
+export default connectedDashboard;

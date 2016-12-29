@@ -1,34 +1,17 @@
 @import './../../styles/color.css';
 
-:local .container {
-  position: relative;
-  margin: 2rem 0;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-};
 
-:local .searchbar {
+:local .container {
   position: absolute;
+  top: calc(100% - .5rem);
+
   width: 80%;
   max-width: 720px;
-  border: 2px solid $search-border;
-  background-color: transparent;
-  height: 3rem;
-  padding: 0 1.5rem;
-  border-radius: 5px;
-  font-size: 20px;
-  -webkit-appearance: none;
-  color: $search-placeholder;
+  margin-bottom: 2rem;
 
-  &:focus {
-    border-color: $search-border-active;
-    outline: 0;
-  };
+  z-index: 1;
+  background-color: $search-sugest-bg;
 };
-
 
 :local .scrollable_wrapper {
   max-height: 500px;
@@ -50,7 +33,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: darkgrey;
+    background-color: $search-scrollbar;
     outline: 1px solid slategrey;
   }
 
@@ -72,15 +55,4 @@
     };
   }
 }
-
-:local .sugestion_container {
-  position: absolute;
-  top: calc(100% - .5rem);
-  width: 80%;
-  max-width: 720px;
-  margin-bottom: 2rem;
-
-  z-index: 1;
-  background-color: $search-sugest-bg;
-};
 

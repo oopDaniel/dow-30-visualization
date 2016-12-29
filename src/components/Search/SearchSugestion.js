@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-
 import React, { PropTypes } from 'react';
 import styles from './SearchSugestion.css';
 
@@ -30,7 +28,7 @@ const defaultProps = {
 const SearchSugestion = ({ isSearching, options, clickHandler }) => {
   if (isSearching) {
     return (
-      <div className={styles.sugestion_container}>
+      <div className={styles.container}>
         <Scrollable>
           {options.map(name => (
             <span
