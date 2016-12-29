@@ -69,7 +69,6 @@ export function loadFocus(persisted) {
 }
 
 export function addFocus(target) {
-  console.info(target);
   return {
     type: types.ADD_FOCUS,
     target,

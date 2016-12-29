@@ -5,8 +5,8 @@ import test from 'tape';
 import search from './../../src/reducers/search';
 import {
   GOT_SEARCHED_RESULT,
-  BEGIN_SEARCHING,
-  END_SEARCHING,
+  OPEN_SEARCHBAR,
+  CLOSE_SEARCHBAR,
 } from './../../src/consts/actionTypes';
 
 
@@ -23,14 +23,21 @@ test('Search reducer', (assert) => {
 
   msg    = 'must init the isSearching status';
   expect = true;
-  actual = search(undefined, { type: BEGIN_SEARCHING }).isSearching;
+  actual = search(undefined, { type: OPEN_SEARCHBAR }).isSearching;
 
   assert.equal(actual, expect, msg);
 
 
-  msg    = 'must handle the isSearching status after searching ends';
+  msg    = 'must set searching status to false after searching ends';
   expect = false;
-  actual = search(undefined, { type: END_SEARCHING }).isSearching;
+  actual = search(undefined, { type: CLOSE_SEARCHBAR }).isSearching;
+
+  assert.equal(actual, expect, msg);
+
+
+  msg    = 'must clean the search field up';
+  expect = '';
+  actual = search(undefined, { type: CLOSE_SEARCHBAR }).word;
 
   assert.equal(actual, expect, msg);
 

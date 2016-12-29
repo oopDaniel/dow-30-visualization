@@ -22,6 +22,7 @@ function search(state = {
       return {
         ...state,
         isSearching: false,
+        word: '',
       };
     }
     case SEARCH_FOR: {
