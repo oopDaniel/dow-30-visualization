@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-condition, space-in-parens */
 import { call, fork, put, select, take } from 'redux-saga/effects';
-import { takeLatest } from 'redux-saga';
+// import { takeLatest } from 'redux-saga';
 import api from './../services/API';
 import { loadState, saveState } from './../services/localStorage';
 import * as types from './../consts/actionTypes';
@@ -19,15 +19,19 @@ export function* fetchLatest(ids) {
 }
 
 
-export function* callFetchLatest(action) {
-  if (action && action.target) {
-    yield fork(fetchLatest, action.target);
-  }
-}
+// export function* callFetchLatest(action) {
+//   if (action && action.target) {
+//     yield fork(fetchLatest, action.target);
+//   }
+// }
 
 // Use call() instead of call takeLatest() directly for unit test
 export function* watchFetchLatest() {
-  yield call(takeLatest, types.FETCH_LATEST_REQUEST, callFetchLatest);
+  // yield call(takeLatest, types.FETCH_LATEST_REQUEST, callFetchLatest);
+  while (true) {
+    const { target } = yield take(types.FETCH_LATEST_REQUEST);
+    yield fork(fetchLatest, target);
+  }
 }
 
 

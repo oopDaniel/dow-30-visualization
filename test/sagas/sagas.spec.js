@@ -66,26 +66,41 @@ test('Initial state saga', (assert) => {
 
 
 test('Watcher for fetching \'latest\' request saga', (assert) => {
-  const msg      = 'must take every \'latest\' request and call according func';
   const iterator = watchFetchLatest();
-  const expect   = call(takeLatest, types.FETCH_LATEST_REQUEST, callFetchLatest);
-  const actual   = iterator.next().value;
+  let msg        = 'must take every \'latest\' request and call according func';
+  let expect     = take(types.FETCH_LATEST_REQUEST);
+  let actual     = iterator.next().value;
 
   assert.deepEqual(actual, expect, msg);
+
+
+  msg      = 'must call fetchLatest with proper params';
+  expect   = fork(fetchLatest, ['APPLE']);
+  actual   = iterator.next({ target: ['APPLE'] }).value;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  msg      = 'must go back to beginning of loop';
+  expect   = take(types.FETCH_LATEST_REQUEST);
+  actual   = iterator.next().value;
+
+  assert.deepEqual(actual, expect, msg);
+
   assert.end();
 });
 
 
-test('Fetching \'latest\' caller saga', (assert) => {
-  const msg      = 'must call fetching func with args';
-  const mock     = { target: ['APPLE', 'PEN'] };
-  const iterator = callFetchLatest(mock);
-  const expect   = fork(fetchLatest, ['APPLE', 'PEN']);
-  const actual   = iterator.next().value;
+// test('Fetching \'latest\' caller saga', (assert) => {
+//   const msg      = 'must call fetching func with args';
+//   const mock     = { target: ['APPLE', 'PEN'] };
+//   const iterator = callFetchLatest(mock);
+//   const expect   = fork(fetchLatest, ['APPLE', 'PEN']);
+//   const actual   = iterator.next().value;
 
-  assert.deepEqual(actual, expect, msg);
-  assert.end();
-});
+//   assert.deepEqual(actual, expect, msg);
+//   assert.end();
+// });
 
 
 test('Watcher saga for changes of the focused', (assert) => {
