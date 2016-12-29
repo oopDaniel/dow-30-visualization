@@ -15,8 +15,8 @@ test('Search reducer', (assert) => {
   let expect = ['PEN', 'PINEAPPLE'];
   let actual = search(undefined, {
     type: GOT_SEARCHED_RESULT,
-    words: ['PEN', 'PINEAPPLE'],
-  }).words;
+    result: ['PEN', 'PINEAPPLE'],
+  }).options;
 
   assert.deepEqual(actual, expect, msg);
 

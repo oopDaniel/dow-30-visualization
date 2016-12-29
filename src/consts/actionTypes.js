@@ -9,8 +9,8 @@ export const LOAD_FOCUS = 'LOAD_FOCUS';
 export const ADD_FOCUS = 'ADD_FOCUS';
 export const REMOVE_FOCUS = 'REMOVE_FOCUS';
 export const SWITCH_PERIOD = 'SWITCH_PERIOD';
-export const BEGIN_SEARCHING = 'BEGIN_SEARCHING';
-export const END_SEARCHING = 'END_SEARCHING';
+export const OPEN_SEARCHBAR = 'OPEN_SEARCHBAR';
+export const CLOSE_SEARCHBAR = 'CLOSE_SEARCHBAR';
 export const SEARCH_FOR = 'SEARCH_FOR';
 export const GOT_SEARCHED_RESULT = 'GOT_SEARCHED_RESULT';
 

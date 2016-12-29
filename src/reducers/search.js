@@ -1,6 +1,6 @@
 import {
-  BEGIN_SEARCHING,
-  END_SEARCHING,
+  OPEN_SEARCHBAR,
+  CLOSE_SEARCHBAR,
   SEARCH_FOR,
   GOT_SEARCHED_RESULT,
 } from './../consts/actionTypes';
@@ -8,28 +8,32 @@ import STOCKS from './../consts/stocks';
 
 function search(state = {
   isSearching: false,
-  words: STOCKS,
+  options: STOCKS,
+  word: '',
 }, action) {
   switch (action.type) {
-    case BEGIN_SEARCHING: {
+    case OPEN_SEARCHBAR: {
       return {
         ...state,
         isSearching: true,
       };
     }
-    case END_SEARCHING: {
+    case CLOSE_SEARCHBAR: {
       return {
         ...state,
         isSearching: false,
       };
     }
     case SEARCH_FOR: {
-      return state;
+      return {
+        ...state,
+        word: action.word,
+      };
     }
     case GOT_SEARCHED_RESULT: {
       return {
         ...state,
-        words: action.words,
+        options: action.result,
       };
     }
     default: {

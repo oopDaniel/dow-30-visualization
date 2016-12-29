@@ -1,6 +1,12 @@
 $search-border: #e2e2e2;
-$search-border-active: #fa0;
+$search-border-active: #1FC2F9;
 $search-placeholder: #92989b;
+$search-sugest-bg: #f6f7fa;
+$search-sugest-row-bg-active: #1FC2F9;
+$search-sugest-row-border: #e0e0e4;
+$search-sugest-row-text: #6a7f8e;
+$search-sugest-row-text-active: #fff;
+
 
 $table-cross: #f6f7fa;
 $table-border: #e5ebee;

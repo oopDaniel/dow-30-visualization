@@ -79,7 +79,7 @@ export function* searchWordChanged() {
       const { word } = lastAction;
       yield fork(handleSearch, word);
       lastAction = null;
-      countDown  = 500;
+      countDown  = 300;
     }
     // const { word } = yield take(types.SEARCH_FOR);
     // yield fork(handleSearch, word);

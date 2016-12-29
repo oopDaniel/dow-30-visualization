@@ -69,8 +69,9 @@ export function loadFocus(persisted) {
 }
 
 export function addFocus(target) {
+  console.info(target);
   return {
-    type: types.LOAD_FOCUS,
+    type: types.ADD_FOCUS,
     target,
   };
 }
@@ -82,7 +83,20 @@ export function removeFocus(target) {
   };
 }
 
-export function search(word) {
+export function openSearchbar() {
+  return {
+    type: types.OPEN_SEARCHBAR,
+  };
+}
+
+export function closeSearchbar() {
+  return {
+    type: types.CLOSE_SEARCHBAR,
+  };
+}
+
+
+export function searchFor(word) {
   return {
     type: types.SEARCH_FOR,
     word,
@@ -92,6 +106,6 @@ export function search(word) {
 export function gotSearchResult(result) {
   return {
     type: types.GOT_SEARCHED_RESULT,
-    words: result,
+    result,
   };
 }

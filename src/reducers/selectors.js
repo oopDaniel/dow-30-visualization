@@ -1,6 +1,7 @@
 
 export const getFocused = state => state.focus;
 export const getStocks = state => state.stocks;
+export const getSearch = state => state.search;
 
 export const getLatestStocks = stock => stock.latest.map(date =>
   ({
@@ -22,7 +23,6 @@ function filterObjByKeys(raw, keys) {
 
 
 export const getStocksByFocused = (state) => {
-  console.error(state);
   const { focused, stocks } = state;
   return {
     ...state,
