@@ -4,3 +4,4 @@ import './reducers/focus.spec';
 import './reducers/stocks.spec';
 import './reducers/period.spec';
 import './reducers/isFetching.spec';
+import './reducers/search.spec';

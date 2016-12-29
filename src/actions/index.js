@@ -82,3 +82,16 @@ export function removeFocus(target) {
   };
 }
 
+export function search(word) {
+  return {
+    type: types.SEARCH_FOR,
+    word,
+  };
+}
+
+export function gotSearchResult(result) {
+  return {
+    type: types.GOT_SEARCHED_RESULT,
+    words: result,
+  };
+}

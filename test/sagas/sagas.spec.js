@@ -1,34 +1,26 @@
 /* eslint-disable no-unused-vars, no-constant-condition,
   import/no-extraneous-dependencies, no-multi-spaces,
-  padded-blocks */
+  padded-blocks, no-prototype-builtins */
 
 import test from 'tape';
 import { takeLatest } from 'redux-saga';
-import { call, put, select, take, fork } from 'redux-saga/effects';
+import { call, put, select, take, fork, race } from 'redux-saga/effects';
 import * as actions from './../../src/actions';
 import { getFocused } from './../../src/reducers/selectors';
 import * as types from './../../src/consts/actionTypes';
+import STOCKS from './../../src/consts/stocks';
 import api from './../../src/services/API';
 import { loadState, saveState } from './../../src/services/localStorage';
 import {
   watchFetchLatest,
   init,
-  nextFocusedChange,
+  nextFocusedChanged,
   callFetchLatest,
   fetchLatest,
+  searchWordChanged,
+  handleSearch,
+  delay,
 } from './../../src/sagas/sagas';
-
-
-// const before = test;
-// const after  = test;
-// let   backup = null;
-
-
-// before(' - Saga Before - ', (assert) => {
-//   backup = loadState();
-//   assert.pass('Backuping localStorage...');
-//   assert.end();
-// });
 
 
 test('Initial state saga', (assert) => {
@@ -53,13 +45,6 @@ test('Initial state saga', (assert) => {
   actual = iterator.next().value;
 
   assert.deepEqual(actual, expect, msg);
-
-
-  // msg    = 'delegate to fetchLatest with the API result';
-  // expect = fork(fetchLatest, ['PINEAPPLE', 'PEN']);
-  // actual = iterator.next('PINEAPPLE,PEN').value;
-
-  // assert.deepEqual(actual, expect, msg);
 
   assert.end();
 });
@@ -91,20 +76,8 @@ test('Watcher for fetching \'latest\' request saga', (assert) => {
 });
 
 
-// test('Fetching \'latest\' caller saga', (assert) => {
-//   const msg      = 'must call fetching func with args';
-//   const mock     = { target: ['APPLE', 'PEN'] };
-//   const iterator = callFetchLatest(mock);
-//   const expect   = fork(fetchLatest, ['APPLE', 'PEN']);
-//   const actual   = iterator.next().value;
-
-//   assert.deepEqual(actual, expect, msg);
-//   assert.end();
-// });
-
-
 test('Watcher saga for changes of the focused', (assert) => {
-  const iterator = nextFocusedChange();
+  const iterator = nextFocusedChanged();
   let msg    = 'must take either ADD_FOCUS or REMOVE_FOCUS action';
   let expect = take([types.ADD_FOCUS, types.REMOVE_FOCUS]);
   let actual = iterator.next().value;
@@ -197,40 +170,67 @@ test('Fetching \'latest\' saga', (assert) => {
 });
 
 
-// after(' - Saga After - ', (assert) => {
-//   if (backup) saveState(backup);
-//   assert.pass('Restoring localStorage...');
-//   assert.end();
-// });
+test('Watcher for search input saga', (assert) => {
+  const iterator = searchWordChanged();
+  let msg    = 'take action must competition with delay, and win initially';
+  let expect = race({
+    action: take(types.SEARCH_FOR),
+    timeout: null,
+  });
+  let actual = iterator.next().value;
+
+  assert.deepEqual(actual, expect, msg);
 
 
-// test('Watcher for changes of the focused', (assert) => {
-//   const iterator = nextFocusedChange();
-//   let msg    = 'must select the change of the focused';
-//   let expect = select(getFocused);
-//   let actual = iterator.next().value;
+  msg    = 'must call handler right away with proper param';
+  expect = fork(handleSearch, 'APPLE');
+  actual = iterator.next({
+    action: { word: 'APPLE' },
+    timeout: null,
+  }).value;
 
-//   assert.deepEqual(actual, expect, msg);
-
-
-//   msg    = 'must take an ADD_FOCUS action';
-//   expect = take(types.ADD_FOCUS);
-//   actual = iterator.next(['APPLE']).value;
-
-//   assert.deepEqual(actual, expect, msg);
+  assert.deepEqual(actual, expect, msg);
 
 
-//   msg    = 'must select the new change of the focused';
-//   expect = select(getFocused);
-//   actual = iterator.next().value;
+  msg    = 'must restart the race with timeout';
+  actual = iterator.next().value.RACE.timeout.hasOwnProperty('CALL');
 
-//   assert.deepEqual(actual, expect, msg);
+  assert.ok(actual, msg);
 
 
-//   msg    = 'delegate to fetchLatest for new stocks in the focused';
-//   expect = fork(fetchLatest, ['APPLE', 'PEN']);
-//   actual = iterator.next(['APPLE', 'PEN']).value;
-//   assert.deepEqual(actual, expect, msg);
+  msg      = 'must have a debouncing time that will not call handler immediately';
+  const unexpect = fork(handleSearch, 'APPLE');
+  actual   = iterator.next().value;
 
-//   assert.end();
-// });
+  assert.notDeepEqual(actual, unexpect, msg);
+
+  assert.end();
+});
+
+
+test('Searching input handler saga', (assert) => {
+  const mockWord = 'H';
+  let iterator = handleSearch(mockWord);
+  let msg      = 'must filter the result by searching word';
+  let expect   = ['HD', 'HON', 'HP'];
+  let actual   = iterator.next().value;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  msg      = 'must dispatch the filtered result';
+  expect   = put(actions.gotSearchResult(['PPAP']));
+  actual   = iterator.next(['PPAP']).value;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  msg      = 'must return the whole stock array if the input field was empty';
+  iterator = handleSearch('');
+  expect   = STOCKS;
+  actual   = iterator.next(STOCKS).value;
+
+  assert.deepEqual(actual, expect, msg);
+
+  assert.end();
+});

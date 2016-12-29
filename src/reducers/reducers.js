@@ -5,6 +5,7 @@ import focus from './focus';
 import stocks from './stocks';
 import period from './period';
 import isFetching from './isFetching';
+import search from './search';
 
 
 export default combineReducers({
@@ -12,6 +13,7 @@ export default combineReducers({
   stocks,
   period,
   isFetching,
+  search,
   routing: routerReducer,
 });
 

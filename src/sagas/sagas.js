@@ -1,12 +1,16 @@
 /* eslint-disable no-constant-condition, space-in-parens */
-import { call, fork, put, select, take } from 'redux-saga/effects';
+import { call, fork, put, select, take, race } from 'redux-saga/effects';
 // import { takeLatest } from 'redux-saga';
 import api from './../services/API';
 import { loadState, saveState } from './../services/localStorage';
 import * as types from './../consts/actionTypes';
-import * as STOCKS from './../consts/stocks';
+import STOCKS from './../consts/stocks';
 import * as actions from './../actions';
 import { getFocused } from './../reducers/selectors';
+
+
+// Throttle helper func
+export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 
 export function* fetchLatest(ids) {
@@ -18,24 +22,14 @@ export function* fetchLatest(ids) {
   }
 }
 
-
-// export function* callFetchLatest(action) {
-//   if (action && action.target) {
-//     yield fork(fetchLatest, action.target);
-//   }
-// }
-
-// Use call() instead of call takeLatest() directly for unit test
 export function* watchFetchLatest() {
-  // yield call(takeLatest, types.FETCH_LATEST_REQUEST, callFetchLatest);
   while (true) {
     const { target } = yield take(types.FETCH_LATEST_REQUEST);
     yield fork(fetchLatest, target);
   }
 }
 
-
-export function* nextFocusedChange() {
+export function* nextFocusedChanged() {
   while (true) {
     // const prevFocus = yield select(getFocused);
     yield take([types.ADD_FOCUS, types.REMOVE_FOCUS]);
@@ -62,7 +56,38 @@ export function* nextFocusedChange() {
   }
 }
 
+export function* handleSearch(word) {
+  const result = yield STOCKS.filter(name => name.includes(word));
+  yield put( actions.gotSearchResult(result) );
+}
 
+export function* searchWordChanged() {
+  let lastAction;
+  let lastTime  = Date.now();
+  let countDown = 0;
+  while (true) {
+    const winner = yield race({
+      action: take(types.SEARCH_FOR),
+      timeout: countDown ? call(delay, countDown) : null,
+    });
+    const now  = Date.now();
+    countDown -= (now - lastTime);
+    lastTime   = now;
+    lastAction = winner && winner.action;
+
+    if (lastAction && countDown <= 0) {
+      const { word } = lastAction;
+      yield fork(handleSearch, word);
+      lastAction = null;
+      countDown  = 500;
+    }
+    // const { word } = yield take(types.SEARCH_FOR);
+    // yield fork(handleSearch, word);
+    // yield call(delay, 500);
+  }
+}
+
+// Restore the persisted focused list in localStorage
 export function* init() {
   const persisted = yield call(loadState);
 
@@ -75,6 +100,7 @@ export function* init() {
 
 export default function* rootSaga() {
   yield fork(init);
-  yield fork(nextFocusedChange);
+  yield fork(nextFocusedChanged);
   yield fork(watchFetchLatest);
+  yield fork(searchWordChanged);
 }
