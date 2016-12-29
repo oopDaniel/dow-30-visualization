@@ -1,3 +1,4 @@
+import 'babel-regenerator-runtime';
 import path from 'path';
 import express from 'express';
 // import morgan from 'morgan';
