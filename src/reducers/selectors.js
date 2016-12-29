@@ -11,25 +11,22 @@ export const getLatestStocks = stock => stock.latest.map(date =>
 
 
 /* eslint-disable no-param-reassign */
-function filterObjByKeys(raw, keys) {
-  return Object.keys(raw)
-    .filter(key => keys.includes(key))
-    .reduce((obj, key) => {
-      obj[key] = raw[key];
+function filterObjByKeys(rawStockMap, keys) {
+  return Object.keys(rawStockMap)
+    .filter(key => keys.indexOf(key) > -1)
+    .reduce((obj, stockName) => {
+      obj[stockName] = rawStockMap[stockName];
       return obj;
     }, {});
 }
 /* eslint-enable */
 
 
-export const getStocksByFocused = (state) => {
-  const { focused, stocks } = state;
+export const getStocksByFocus = (state) => {
+  const { focus, stocks } = state;
   return {
-    ...state,
-    stocks: {
-      allNames: stocks.allNames.filter(s => focused.includes(s)),
-      byName: filterObjByKeys(stocks.byName, focused),
-    },
+    allNames: stocks.allNames.filter(s => focus.indexOf(s) > -1),
+    byName: filterObjByKeys(stocks.byName, focus),
   };
 };
 
