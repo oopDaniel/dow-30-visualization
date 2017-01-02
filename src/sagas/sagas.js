@@ -18,7 +18,7 @@ export function* fetchLatest(ids) {
     const response = yield call(api.getLatest, ids);
     yield put( actions.fetchLatestSucceeded(response) );
   } catch (error) {
-    yield put({ type: types.FETCH_LATEST_FAILED, error });
+    yield put( actions.fetchLatestFailed(error) );
   }
 }
 
