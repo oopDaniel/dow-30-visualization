@@ -21,7 +21,7 @@ class Dashboard extends Component {
 
     return (
       <div className={styles.container}>
-        <Chart />
+        <Chart stocks={stocks}/>
         <Table stocks={stocks}/>
       </div>
     );
