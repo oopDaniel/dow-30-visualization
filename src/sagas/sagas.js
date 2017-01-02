@@ -6,7 +6,7 @@ import { loadState, saveState } from './../services/localStorage';
 import * as types from './../consts/actionTypes';
 import STOCKS from './../consts/stocks';
 import * as actions from './../actions';
-import { getFocused } from './../reducers/selectors';
+import { getFocused, getStockNames } from './../reducers/selectors';
 
 
 // Throttle helper func
@@ -31,28 +31,19 @@ export function* watchFetchLatest() {
 
 export function* nextFocusedChanged() {
   while (true) {
-    // const prevFocus = yield select(getFocused);
-    yield take([types.ADD_FOCUS, types.REMOVE_FOCUS]);
+    const { type: actionType, target }
+      = yield take([types.ADD_FOCUS, types.REMOVE_FOCUS]);
 
-    const focused = yield select(getFocused);
-    const shouldCallAPI = focused && focused.length > 0;
+    const stockNames = yield select(getStockNames);
+    const shouldCallAPI = actionType === types.ADD_FOCUS
+      && !stockNames.includes(target);
 
     if (shouldCallAPI) {
-      yield fork(fetchLatest, focused);
-    } else {
-      // Empty result
-      yield [];
+      yield fork(fetchLatest, [target]);
     }
 
+    const focused = yield select(getFocused);
     yield call(saveState, focused.join(','));
-    // ADD_FOCUS or REMOVE_FOCUS will always make the array length different
-    // const hasChanged = Array.isArray(prevFocus) &&
-    //   Array.isArray(newFocus) &&
-    //   prevFocus.length !== newFocus.length;
-
-    // if (hasChanged) {
-    //   yield fork(fetchLatest, newFocus);
-    // }
   }
 }
 

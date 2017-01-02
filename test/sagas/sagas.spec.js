@@ -6,7 +6,7 @@ import test from 'tape';
 import { takeLatest } from 'redux-saga';
 import { call, put, select, take, fork, race } from 'redux-saga/effects';
 import * as actions from './../../src/actions';
-import { getFocused } from './../../src/reducers/selectors';
+import { getFocused, getStockNames } from './../../src/reducers/selectors';
 import * as types from './../../src/consts/actionTypes';
 import STOCKS from './../../src/consts/stocks';
 import api from './../../src/services/API';
@@ -85,23 +85,30 @@ test('Watcher saga for changes of the focused', (assert) => {
   assert.deepEqual(actual, expect, msg);
 
 
-  msg    = 'must select the new change of the focused';
+  msg    = 'must select the available stock names';
+  const mock = { type: types.ADD_FOCUS, target: 'APPLE' };
+  expect = select(getStockNames);
+  actual = iterator.next(mock).value;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  msg    = 'delegate to fetchLatest for new stocks that haven\'t fetched yet';
+  expect = fork(fetchLatest, ['APPLE']);
+  actual = iterator.next(['PEN']).value;
+
+  assert.deepEqual(actual, expect, msg);
+
+  msg    = 'must select the new focus list for storage';
   expect = select(getFocused);
   actual = iterator.next().value;
 
   assert.deepEqual(actual, expect, msg);
 
 
-  msg    = 'delegate to fetchLatest for new stocks in the focused';
-  expect = fork(fetchLatest, ['APPLE']);
-  actual = iterator.next(['APPLE']).value;
-
-  assert.deepEqual(actual, expect, msg);
-
-
   msg    = 'must call localStorage API';
-  expect = call(saveState, 'APPLE');
-  actual = iterator.next().value;
+  expect = call(saveState, 'APPLE,PEN');
+  actual = iterator.next(['APPLE', 'PEN']).value;
 
   assert.deepEqual(actual, expect, msg);
 
@@ -109,14 +116,6 @@ test('Watcher saga for changes of the focused', (assert) => {
   msg    = 'must go back to beginning of loop';
   expect = take([types.ADD_FOCUS, types.REMOVE_FOCUS]);
   actual = iterator.next().value;
-
-  assert.deepEqual(actual, expect, msg);
-
-
-  msg    = 'must handle the empty array correctly';
-  expect = [];
-  iterator.next();
-  actual = iterator.next([]).value;
 
   assert.deepEqual(actual, expect, msg);
 
