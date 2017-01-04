@@ -3,8 +3,6 @@ const path = require('path');
 const webpack = require('webpack');
 const common = require('./webpack.config.common');
 
-console.log('im here!!!!!!!!!!!!!!!!!!')
-
 module.exports = Object.assign({}, common, {
   devtool: 'source-map',
   entry: [
