@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import { createStore, compose, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
@@ -13,11 +14,10 @@ const configureStore = () => {
   // Conditionally apply logging middlware when not in production
   if (process.env.NODE_ENV !== 'production') middlewares.push(createLogger());
 
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
   // Hot reload for devTool
-  const enhancer = compose(
-    applyMiddleware(...middlewares),
-    window.devToolsExtension && window.devToolsExtension(),
-  );
+  const enhancer = composeEnhancers(applyMiddleware(...middlewares));
 
   // Create the store
   const store = createStore(rootReducer, enhancer);

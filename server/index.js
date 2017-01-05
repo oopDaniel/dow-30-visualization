@@ -24,7 +24,7 @@ log4js.configure({
     { type: 'console', category: 'normal' },
     {
       type: 'file',
-      filename: 'logs/cheese.log',
+      filename: path.resolve(__dirname, 'logs/cheese.log'),
       maxLogSize: 1024,
       backups: 3,
       category: 'cheese',

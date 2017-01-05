@@ -15,10 +15,11 @@ if (CONFIG.log.useLogger) {
 router.get('/api/latest', (req, res) => {
   const targetStocks = req.query.target;
   // Use '' to brace each stockName
-  const stockStr = targetStocks
-    .split(',')
-    .map(s => `'${s}'`)
-    .join(',');
+  const stockStr = targetStocks ?
+    targetStocks.split(',')
+      .map(s => `'${s}'`)
+      .join(',')
+    : '';
 
   const stmt = `
     SELECT *
@@ -36,6 +37,7 @@ router.get('/api/latest', (req, res) => {
   `;
   DB.query(stmt)
   .then((result) => {
+    console.log(result);
     res.setHeader('Content-Type', 'application-json; charset=utf-8');
     res.end(JSON.stringify(result));
   })
