@@ -6,6 +6,14 @@
   justify-content: center;
 }
 
+:local .inner_container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
 
 :local .svg_container {
   height: 100px;
