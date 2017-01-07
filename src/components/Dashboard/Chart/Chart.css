@@ -29,3 +29,19 @@
 
 }
 
+.x-axis {
+  path {
+    /* display: none; */
+     stroke-width: 1px;
+    stroke: #6a7f8e;
+    stroke-width: 2;
+    fill: none;
+  }
+  line {
+    /* stroke-width: 1px; */
+    stroke: #6a7f8e;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+    /* fill: none; */
+  }
+}

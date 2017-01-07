@@ -14,6 +14,7 @@ const d3Params = {
   maxWidth: 1000,
   enterDuration: 1000,
   updateDuration: 800,
+  delay: 800,
 
   barWidth: 20,
 };
@@ -36,6 +37,7 @@ class Chart extends Component {
     this.getLatestStock = this.getLatestStock.bind(this);
     this.renderChart    = this.renderChart.bind(this);
     this.renderText     = this.renderText.bind(this);
+    this.renderAxis     = this.renderAxis.bind(this);
 
     const scale = {
       x:    d3.scale.linear(),
@@ -48,6 +50,7 @@ class Chart extends Component {
       chart:  <span />,
       canvas: null,
       hook:   null,
+      xAxis:  d3.svg.axis().orient('bottom'),
       data:   [],
       height: 0,
       width:  0,
@@ -139,20 +142,20 @@ class Chart extends Component {
       .transition()
       .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height)
       .attr('height', d => height - this.state.scale.y(d.value))
-      .attr('x', (d, i) => this.state.scale.x(i + 1))
+      .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth / 2)
       .duration(d3Params.updateDuration)
       .call(this.state.hook)
 
     enter.append('rect')
       .attr('class', 'bar theme2')
-      .attr('x', (d, i) => this.state.scale.x(i + 1))
+      .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth / 2)
       .attr('y', height - d3Params.paddingBottom * height)
       .attr('fill', 'steelblue')
       .attr('width', d3Params.barWidth)
       .attr('height', 0)
 
     .transition()
-      .delay((d, i) => i * 800)
+      .delay((d, i) => i * d3Params.delay)
       .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height)
       .attr('height', d => height - this.state.scale.y(d.value))
       .duration(d3Params.enterDuration)
@@ -168,21 +171,52 @@ class Chart extends Component {
       .remove();
 
     text.enter().append('text')
-      .attr('x', (d, i) => this.state.scale.x(i + 1))
+      .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth * .7 )
       .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height - 10)
-      .text(d => d.name);
+      // .text(d => '');
 
     text.transition()
-      .attr('x', (d, i) => this.state.scale.x(i + 1));
+      .delay((d, i) => i * d3Params.delay)
+      .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth * .7 )
+      .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height - 10)
+      .text(d => d.value);
+  }
+
+  renderAxis(target = d3.select('.x-axis')) {
+    const { height } = this.state;
+    const tickValues = Array.from(
+      new Array(this.state.data.length),
+      (v, i) => i + 1,
+    );
+
+    console.error(this.state.data)
+
+    this.state.xAxis
+      .tickValues(tickValues)
+      .tickFormat((d, i) => this.state.data[i].name)
+      .scale(this.state.scale.x)
+
+    target
+      .transition()
+      .duration(d3Params.updateDuration)
+      .call(this.state.xAxis);
   }
 
 
-  componentWillReceiveProps(p) {
-    this.extractData(p);
-    this.setDomain(this.state.data);
+  componentWillReceiveProps(props) {
+    const hasDataChanged =
+      this.state.data.length !== props.stocks.allNames.length;
 
-    this.renderChart();
-    this.renderText();
+    if (hasDataChanged) {
+      this.extractData(props);
+      this.setDomain(this.state.data);
+
+      this.renderChart();
+      this.renderText();
+      this.renderAxis();
+    }
+
+
   }
 
   shouldComponentUpdate() {
@@ -219,6 +253,15 @@ class Chart extends Component {
 
     this.renderChart();
     this.renderText();
+
+    const axis = this.state.canvas
+      .append('g')
+      .attr({
+        'class': `x-axis`,
+        'transform': `translate(0, ${height * (1 - d3Params.paddingBottom * .9)})`,
+      })
+
+    this.renderAxis(axis);
   }
 
   render() {
