@@ -84,17 +84,20 @@ class Chart extends Component {
     this.state.scale.x.domain([ 0, data.length + 1 ])
       .nice();
 
-    // Preserve max and min value
-    this.state.scale.max = Math.max(
-      ...d3.extent(data, d => d.value),
-      this.state.scale.max,
-    );
-    this.state.scale.min = Math.min(
-      ...d3.extent(data, d => d.value),
-      this.state.scale.min,
-    );
-    this.state.scale.y.domain([this.state.scale.min, this.state.scale.max])
-      .nice();
+    if (data.length > 0) {
+      // Preserve max and min value
+      this.state.scale.max = Math.max(
+        ...d3.extent(data, d => d.value),
+        this.state.scale.max,
+      );
+
+      this.state.scale.min = Math.min(
+        ...d3.extent(data, d => d.value),
+        this.state.scale.min,
+      );
+      this.state.scale.y.domain([this.state.scale.min, this.state.scale.max])
+        .nice();
+    }
   }
 
   // <renderTarget> subjects to change if UI interaction was allowed later
@@ -128,6 +131,8 @@ class Chart extends Component {
       .data(this.state.data, d => d.name);
     const enter  = update.enter();
     const exit   = update.exit();
+
+    this.renderAxis();
 
     exit
       .transition()
@@ -189,8 +194,6 @@ class Chart extends Component {
       (v, i) => i + 1,
     );
 
-    console.error(this.state.data)
-
     this.state.xAxis
       .tickValues(tickValues)
       .tickFormat((d, i) => this.state.data[i].name)
@@ -213,7 +216,7 @@ class Chart extends Component {
 
       this.renderChart();
       this.renderText();
-      this.renderAxis();
+
     }
 
 
