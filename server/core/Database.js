@@ -22,7 +22,8 @@ export default class Database {
         High REAL,
         Low REAL,
         Close REAL,
-        Volume INT
+        Volume INT,
+        IsLatest INT
       )`;
       this.db.run(`CREATE TABLE dow30 ${scheme}`);
     });
@@ -42,9 +43,9 @@ export default class Database {
 
     logger.trace('DB: inserting data...')
     this.db.serialize( () => {
-      let stmt  = this.db.prepare('INSERT INTO dow30 (Name, Date, Open, Close, High, Low, Volume) VALUES (?, ?, ?, ?, ?, ?, ?)');
-      const { date, open, close, high, low, volume } = dataset;
-      stmt.run(name, date, open, close, high, low, volume);
+      let stmt  = this.db.prepare('INSERT INTO dow30 (Name, Date, Open, Close, High, Low, Volume, IsLatest) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+      const { date, open, close, high, low, volume, isLatest } = dataset;
+      stmt.run(name, date, open, close, high, low, volume, isLatest);
 
       stmt.finalize();
     });

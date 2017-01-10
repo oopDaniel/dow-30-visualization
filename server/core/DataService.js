@@ -112,29 +112,32 @@ export default class DataService {
 
   static storeToDB(data) {
     const keys = Object.keys(data);
+    const AMOUNT_TO_KEEP = 2;
     keys.forEach((name) => {
       const rows = data[name].dataset_data.data;
       const len  = rows.length;
 
-      // for (let i = 0; i < len; ++i) {
-      //   DB.insert(name, {
-      //     Date:   toTimestamp(rows[i][0]),
-      //     Open:   rows[i][1],
-      //     High:   rows[i][2],
-      //     Low:    rows[i][3],
-      //     Close:  rows[i][4],
-      //     Volume: rows[i][5],
-      //   });
-      // }
-      //
-      DB.insert(name, {
-        date:   toTimestamp(rows[0][0]),
-        open:   rows[0][1],
-        high:   rows[0][2],
-        low:    rows[0][3],
-        close:  rows[0][4],
-        volume: rows[0][5],
-      });
+      for (let i = 0; i < len; ++i) {
+        DB.insert(name, {
+          date:   toTimestamp(rows[i][0]),
+          open:   rows[i][1],
+          high:   rows[i][2],
+          low:    rows[i][3],
+          close:  rows[i][4],
+          volume: rows[i][5],
+
+          // WORKAROUND: keep the latest 2 records by flag, but speed the query up
+          isLatest: Number(i > len - AMOUNT_TO_KEEP - 1),
+        });
+      }
+      // DB.insert(name, {
+      //   date:   toTimestamp(rows[0][0]),
+      //   open:   rows[0][1],
+      //   high:   rows[0][2],
+      //   low:    rows[0][3],
+      //   close:  rows[0][4],
+      //   volume: rows[0][5],
+      // });
     });
   }
 

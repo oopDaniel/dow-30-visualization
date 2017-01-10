@@ -21,27 +21,40 @@ router.get('/api/latest', (req, res) => {
       .join(',')
     : '';
 
+  // const stmt = `
+  //   SELECT *
+  //   FROM  dow30 t1
+  //   INNER JOIN
+  //   (
+  //       SELECT Max(Date) Date, Name
+  //       FROM   dow30
+  //       WHERE Name IN (${stockStr})
+  //       GROUP BY name, Date
+  //   ) AS t2
+  //       ON t1.Name = t2.Name
+  //       AND t1.Date = t2.Date
+  //   ORDER BY date DESC
+  // `;
+
   const stmt = `
     SELECT *
     FROM  dow30 t1
-    INNER JOIN
-    (
-        SELECT Max(Date) Date, Name
-        FROM   dow30
-        WHERE Name IN (${stockStr})
-        GROUP BY name
-    ) AS t2
-        ON t1.Name = t2.Name
-        AND t1.Date = t2.Date
-    ORDER BY date DESC
+    WHERE IsLatest > 0
+    AND Name IN (${stockStr})
+    ORDER BY Name ASC, Date DESC
   `;
+
+  logger.trace('Query began', Date.now());
+
   DB.query(stmt)
   .then((result) => {
+    logger.trace('Query ended', Date.now());
     console.log(result);
     res.setHeader('Content-Type', 'application-json; charset=utf-8');
     res.end(JSON.stringify(result));
   })
   .catch((err) => {
+    logger.trace('Query ended', Date.now());
     logger.error(err);
     const errMsg = { err };
     res.end(JSON.stringify(errMsg));
