@@ -8,5 +8,5 @@ export default function TimeFormatter(timeStr) {
   const time = timeStr.split('-');
   // Month begins with 0
   time[1] -= 1;
-  return Number(new Date(time));
+  return Number(new Date(...time));
 }

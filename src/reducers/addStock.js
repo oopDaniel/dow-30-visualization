@@ -19,13 +19,19 @@ const addStock = (state, res) => {
 
     // Has no the record for this specific time, insert
     if (!targetStock.data[stock.Date]) {
-      const min = targetStock.latest.reduce((a, b) => Math.min(a, b));
+      const latests   = targetStock.latest;
+      const minLatest = latests.reduce((a, b) => Math.min(a, b));
 
       // Only keep the latest timestamp in array
-      if (min < stock.Date) {
+      if (minLatest < stock.Date) {
         targetStock.latest = [
           ...targetStock.latest.slice(1),
           stock.Date,
+        ];
+      } else if (minLatest > stock.Date) {
+        targetStock.latest = [
+          stock.Date,
+          ...targetStock.latest.slice(1),
         ];
       }
 
