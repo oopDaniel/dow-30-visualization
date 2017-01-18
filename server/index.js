@@ -1,5 +1,6 @@
 import 'babel-regenerator-runtime';
 import path from 'path';
+import fs from 'fs';
 import express from 'express';
 // import morgan from 'morgan';
 import helmet  from 'helmet';
@@ -18,13 +19,18 @@ const app = express();
 
 // ============    log4js init   =============
 
+const logPath = path.resolve(__dirname, 'logs');
+if (!fs.existsSync(logPath)) {
+  fs.mkdirSync(logPath);
+}
+
 log4js.loadAppender('file');
 log4js.configure({
   appenders: [
     { type: 'console', category: 'normal' },
     {
       type: 'file',
-      filename: path.resolve(__dirname, 'logs/cheese.log'),
+      filename: path.resolve(logPath, 'cheese.log'),
       maxLogSize: 1024,
       backups: 3,
       category: 'cheese',
