@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import className from 'classnames';
+
 import styles from './TableRow.css';
+import numFilter from './../../../helpers/number-filter';
 
 const propTypes = {
   name: PropTypes.string.isRequired,
@@ -33,11 +35,11 @@ const TableRow = ({ name, stock, index }) => {
       >
         {name}
       </Link>
-      <span>{stock.Open}</span>
-      <span>{stock.Close}</span>
-      <span>{stock.High}</span>
-      <span>{stock.Low}</span>
-      <span>{stock.Volume}</span>
+      <span>{numFilter(stock.Open)}</span>
+      <span>{numFilter(stock.Close)}</span>
+      <span>{numFilter(stock.High)}</span>
+      <span>{numFilter(stock.Low)}</span>
+      <span>{numFilter(stock.Volume)}</span>
     </div>
   );
 };
