@@ -8,8 +8,10 @@ $theme-primary: #337ab7;
 $theme-primary-border: #2e6da4;
 $theme-primary-hover: #286090;
 $theme-primary-border-hover: #204d74;
+*/
 
 $theme-success: #52BD7E;
+/*
 $theme-success-border: #4cae4c;
 $theme-success-hover: #39A465;
 $theme-success-border-hover: #398439;
@@ -23,8 +25,8 @@ $theme-warning: #f0ad4e;
 /*$theme-warning-border: #eea236;
 $theme-warning-hover: #ec971f;
 $theme-warning-border-hover: #d58512;*/
-/*
 $theme-danger: #d9534f;
+/*
 $theme-danger-border: #d43f3a;
 $theme-danger-hover: #c9302c;
 $theme-danger-border-hover: #ac2925;
