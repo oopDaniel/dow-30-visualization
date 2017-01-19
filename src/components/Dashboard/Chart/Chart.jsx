@@ -35,15 +35,16 @@ class Chart extends Component {
     this.setDomain      = this.setDomain.bind(this);
     this.extractData    = this.extractData.bind(this);
     this.getLatestStock = this.getLatestStock.bind(this);
+    this.getThemeColor  = this.getThemeColor.bind(this);
     this.renderChart    = this.renderChart.bind(this);
     this.renderText     = this.renderText.bind(this);
     this.renderAxis     = this.renderAxis.bind(this);
 
     const scale = {
-      x:    d3.scale.linear(),
-      y:    d3.scale.linear(),
-      max:  0,
-      min:  Number.MAX_SAFE_INTEGER,
+      x:      d3.scale.linear(),
+      y:      d3.scale.linear(),
+      max:    0,
+      min:    Number.MAX_SAFE_INTEGER,
     };
 
     this.state = {
@@ -69,6 +70,8 @@ class Chart extends Component {
       width * (1 - 2 * d3Params.paddingLeft),
     ]);
 
+    // Using 'Scalar' in line with the y-axis default behavior in browser
+    // Invert the max and min
     this.state.scale.y.range([
       height * (1 - d3Params.paddingTop - d3Params.paddingBottom),
       height * (d3Params.paddingTop + d3Params.paddingBottom),
@@ -80,22 +83,24 @@ class Chart extends Component {
       throw new Error('Incorrect input type');
     }
 
+    // X-domain
     // Extend both min and max in x-axis to render a better UI
     this.state.scale.x.domain([ 0, data.length + 1 ])
       .nice();
 
+    // Y-domain
     if (data.length > 0) {
       // Preserve max and min value
       this.state.scale.max = Math.max(
-        ...d3.extent(data, d => d.value),
+        ...d3.extent(data, d => Math.max(d.value, d.prevValue)),
         this.state.scale.max,
       );
-
-      this.state.scale.min = Math.min(
-        ...d3.extent(data, d => d.value),
-        this.state.scale.min,
-      );
-      this.state.scale.y.domain([this.state.scale.min, this.state.scale.max])
+      // this.state.scale.min = Math.min(
+      //   ...d3.extent(data, d => Math.min(d.value, d.prevValue)),
+      //   this.state.scale.min,
+      // );
+      this.state.scale.y.domain([0, this.state.scale.max])
+      // this.state.scale.y.domain([this.state.scale.min, this.state.scale.max])
         .nice();
     }
   }
@@ -107,8 +112,11 @@ class Chart extends Component {
 
     Object.keys(stockNames)
       .forEach((name) => {
-        const value = this.getLatestStock(stockNames[name])[renderTarget];
-        data.push({ name, value });
+        const record = {
+          name,
+          ...this.getLatestStock(stockNames[name], renderTarget),
+        }
+        data.push(record);
       });
 
     this.state = {
@@ -117,11 +125,22 @@ class Chart extends Component {
     };
   }
 
-  // TODO: Implement this with the last period later
-  getLatestStock(stock) {
-    // stock.latest.forEach((time) => {
-    // });
-    return stock.data[stock.latest[0]];
+  getLatestStock(stock, target) {
+    const value     = stock.data[stock.latest[1]][target];
+    const prevValue = stock.data[stock.latest[0]][target];
+    const trend     = value === prevValue
+      ? 0
+      : value > prevValue
+        ? 1
+        : -1;
+    return { value, prevValue, trend };
+  }
+
+  getThemeColor(data) {
+    return data.trend === 0
+      ? styles.theme_unchanged
+      : data.trend > 0
+        ? styles.theme_up : styles.theme_down;
   }
 
   renderChart() {
@@ -145,17 +164,17 @@ class Chart extends Component {
 
     update
       .transition()
-      .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height)
-      .attr('height', d => height - this.state.scale.y(d.value))
+      .attr('y', d => this.state.scale.y(d.prevValue) - d3Params.paddingBottom * height)
+      .attr('height', d => height - this.state.scale.y(d.prevValue))
       .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth / 2)
       .duration(d3Params.updateDuration)
       .call(this.state.hook)
 
     enter.append('rect')
-      .attr('class', 'bar theme2')
+      .attr('class', this.getThemeColor)
       .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth / 2)
-      .attr('y', height - d3Params.paddingBottom * height)
-      .attr('fill', 'steelblue')
+      .attr('y', d => height - d3Params.paddingBottom * height)
+      // .attr('fill', 'steelblue')
       .attr('width', d3Params.barWidth)
       .attr('height', 0)
 
@@ -165,6 +184,7 @@ class Chart extends Component {
       .attr('height', d => height - this.state.scale.y(d.value))
       .duration(d3Params.enterDuration)
       .call(this.state.hook);
+
   }
 
   renderText() {

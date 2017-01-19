@@ -1,4 +1,4 @@
-
+@import './../../../styles/color.css';
 
 :local .container {
   height: 400px;
@@ -14,7 +14,6 @@
 }
 
 
-
 :local .svg_container {
   height: 100px;
   width: 100px;
@@ -25,8 +24,19 @@
   width: 100px;
 }
 
-:local .bars {
+:local .theme_up {
+  fill: $theme-success;
+}
 
+:local .theme_down {
+  fill: $theme-danger;
+}
+
+:local .theme_unchanged {
+  fill: lightsteelblue;
+}
+
+:local .bars {
 }
 
 .x-axis {
