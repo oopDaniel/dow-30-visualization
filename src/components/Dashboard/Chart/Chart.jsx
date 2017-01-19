@@ -3,15 +3,16 @@ import React, { PropTypes, Component } from 'react';
 import Faux from 'react-faux-dom'
 import * as d3 from 'd3';
 
+import numFilter from './../../../helpers/number-filter';
 import createHook from './../../../helpers/d3-transition';
 import styles from './Chart.css';
 
 const d3Params = {
   // 30% padding
-  paddingLeft: .3,
+  paddingLeft: .2,
   paddingTop: .1,
   paddingBottom: .1,
-  maxWidth: 1000,
+  // maxWidth: 1000,
   enterDuration: 1000,
   updateDuration: 800,
   delay: 800,
@@ -37,7 +38,7 @@ class Chart extends Component {
     this.getLatestStock = this.getLatestStock.bind(this);
     this.getThemeColor  = this.getThemeColor.bind(this);
     this.renderChart    = this.renderChart.bind(this);
-    this.renderText     = this.renderText.bind(this);
+    // this.renderText     = this.renderText.bind(this);
     this.renderAxis     = this.renderAxis.bind(this);
 
     const scale = {
@@ -153,6 +154,10 @@ class Chart extends Component {
 
     this.renderAxis();
 
+    const tooltip = d3.select('#chart-container').append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
+
     exit
       .transition()
       .attr('y', height - d3Params.paddingBottom * height)
@@ -174,9 +179,33 @@ class Chart extends Component {
       .attr('class', this.getThemeColor)
       .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth / 2)
       .attr('y', d => height - d3Params.paddingBottom * height)
-      // .attr('fill', 'steelblue')
       .attr('width', d3Params.barWidth)
       .attr('height', 0)
+      .on('mouseover', (d, i) => {
+        const rects   = d3.selectAll('rect')[0];
+        const pos     = rects[i].getClientRects()[0];
+        const leftPos = pos.left - d3Params.barWidth;
+        const topPos  = pos.top - height * d3Params.paddingBottom / 2;
+        tooltip.transition()
+          .duration(200)
+          .style('opacity', .9);
+        tooltip.html(`
+          <div class="inner-toolip">
+          ${d.name}
+          <br/>
+          <span class=${this.getThemeColor(d)}><b>${numFilter(d.value)}</b></span>
+          <br/>
+          (${numFilter(d.prevValue)})
+          </div>
+        `)
+          .style('left', `${leftPos}px`)
+          .style('top', `${topPos}px`);
+        })
+      .on('mouseout', (d) => {
+        tooltip.transition()
+          .duration(400)
+          .style('opacity', 0);
+        })
 
     .transition()
       .delay((d, i) => i * d3Params.delay)
@@ -187,25 +216,25 @@ class Chart extends Component {
 
   }
 
-  renderText() {
-    const { height } = this.state;
-    let text = this.state.canvas.selectAll('text')
-        .data(this.state.data, d => d.name);
+  // renderText() {
+  //   const { height } = this.state;
+  //   let text = this.state.canvas.selectAll('text')
+  //       .data(this.state.data, d => d.name);
 
-    text.exit()
-      .remove();
+  //   text.exit()
+  //     .remove();
 
-    text.enter().append('text')
-      .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth * .7 )
-      .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height - 10)
-      // .text(d => '');
+  //   text.enter().append('text')
+  //     .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth * .7 )
+  //     .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height - 10)
+  //     // .text(d => '');
 
-    text.transition()
-      .delay((d, i) => i * d3Params.delay)
-      .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth * .7 )
-      .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height - 10)
-      .text(d => d.value);
-  }
+  //   text.transition()
+  //     .delay((d, i) => i * d3Params.delay)
+  //     .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth * .7 )
+  //     .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height - 10)
+  //     .text(d => d.value);
+  // }
 
   renderAxis(target = d3.select('.x-axis')) {
     const { height } = this.state;
@@ -235,8 +264,7 @@ class Chart extends Component {
       this.setDomain(this.state.data);
 
       this.renderChart();
-      this.renderText();
-
+      // this.renderText();
     }
 
 
@@ -251,7 +279,8 @@ class Chart extends Component {
       = this.refs.container;
 
     const faux = new Faux.Element('div')
-    faux.setAttribute('class', styles.inner_container);
+    faux.setAttribute('class', styles.inner_container)
+    faux.setAttribute('id', 'as');
 
     // Keep the width & height for later usage
     this.state = {
@@ -269,13 +298,13 @@ class Chart extends Component {
     this.setDomain(this.state.data);
 
     this.state.canvas = d3.select(faux).append('svg')
-      .attr('width', '80%')
+      .attr('width', '100%')
       .attr('height', height)
       .append('g')
       .attr('transform', 'translate(0, 0)');
 
     this.renderChart();
-    this.renderText();
+    // this.renderText();
 
     const axis = this.state.canvas
       .append('g')
@@ -291,6 +320,7 @@ class Chart extends Component {
     return (
       <div
         ref="container"
+        id="chart-container"
         className={styles.container}
       >
         {this.state.chart}

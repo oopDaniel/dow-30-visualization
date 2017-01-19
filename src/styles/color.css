@@ -58,6 +58,8 @@ $table-border: #e5ebee;
 $table-stock-name: cornflowerblue;
 $table-stock-name-active: lightskyblue;
 
+$tooltip-bg: #333740;
+$tooltip-text: #eee;
 
 $dashboard-title-text: #4a525b;
 $dashboard-text: #6a7f8e;

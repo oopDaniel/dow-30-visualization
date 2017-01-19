@@ -7,7 +7,7 @@
 }
 
 :local .inner_container {
-  width: 100%;
+  width: 80%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -26,14 +26,17 @@
 
 :local .theme_up {
   fill: $theme-success;
+  color: $theme-success;
 }
 
 :local .theme_down {
   fill: $theme-danger;
+  color: $theme-danger;
 }
 
 :local .theme_unchanged {
   fill: lightsteelblue;
+  color: lightsteelblue;
 }
 
 :local .bars {
@@ -54,4 +57,36 @@
     shape-rendering: crispEdges;
     /* fill: none; */
   }
+}
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 64px;
+  height: 72px;
+  margin-top: -56px;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+.inner-toolip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  background: $tooltip-bg;
+  color: $tooltip-text;
+  &:before {
+    position: absolute;
+    content: "";
+    height: 0;
+    width: 0;
+    pointer-events: none;
+    border: solid transparent;
+    border-top-color: $tooltip-bg;
+    border-width: 10px;
+    left: 50%;
+    margin-left: -10px;
+    top: 100%;
+  };
 }
