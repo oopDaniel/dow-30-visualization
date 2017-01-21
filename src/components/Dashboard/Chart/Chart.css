@@ -27,11 +27,17 @@
 :local .theme_up {
   fill: $theme-success;
   color: $theme-success;
+  &:hover {
+    fill: $theme-success-hover;
+  }
 }
 
 :local .theme_down {
   fill: $theme-danger;
   color: $theme-danger;
+  &:hover {
+    fill: $theme-danger-hover;
+  }
 }
 
 :local .theme_unchanged {

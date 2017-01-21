@@ -185,7 +185,7 @@ class Chart extends Component {
         const index   = rects.findIndex(rect => rect.attributes.name.value === d.name);
         const pos     = rects[index] && rects[index].getClientRects()[0];
         const leftPos = pos && pos.left - d3Params.barWidth - 2 || 0;
-        const topPos  = pos && pos.top - height * d3Params.paddingBottom / 2 - 8 || 0;
+        const topPos  = pos && pos.top - height * d3Params.paddingBottom / 2 || 0;
         tooltip.transition()
           .duration(200)
           .style('opacity', .9);
