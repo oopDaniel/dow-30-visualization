@@ -152,7 +152,6 @@ class Chart extends Component {
     const enter  = update.enter();
     const exit   = update.exit();
 
-    this.renderAxis();
 
     const tooltip = d3.select('#chart-container').append('div')
       .attr('class', 'tooltip')
@@ -163,9 +162,8 @@ class Chart extends Component {
       .attr('y', height - d3Params.paddingBottom * height)
       .attr('height', 0)
       .attr('opacity', .6)
-      .duration(d3Params.updateDuration)
       .remove()
-      .call(this.state.hook)
+      // .call(this.state.hook)
 
     update
       .transition()
@@ -177,15 +175,17 @@ class Chart extends Component {
 
     enter.append('rect')
       .attr('class', this.getThemeColor)
+      .attr('name', d => d.name)  // For getting correct index of rect in tooltips
       .attr('x', (d, i) => this.state.scale.x(i + 1) - d3Params.barWidth / 2)
       .attr('y', d => height - d3Params.paddingBottom * height)
       .attr('width', d3Params.barWidth)
       .attr('height', 0)
-      .on('mouseover', (d, i) => {
+      .on('mouseover', (d) => {
         const rects   = d3.selectAll('rect')[0];
-        const pos     = rects[i].getClientRects()[0];
-        const leftPos = pos.left - d3Params.barWidth;
-        const topPos  = pos.top - height * d3Params.paddingBottom / 2;
+        const index   = rects.findIndex(rect => rect.attributes.name.value === d.name);
+        const pos     = rects[index] && rects[index].getClientRects()[0];
+        const leftPos = pos && pos.left - d3Params.barWidth - 2 || 0;
+        const topPos  = pos && pos.top - height * d3Params.paddingBottom / 2 - 8 || 0;
         tooltip.transition()
           .duration(200)
           .style('opacity', .9);
@@ -214,6 +214,7 @@ class Chart extends Component {
       .duration(d3Params.enterDuration)
       .call(this.state.hook);
 
+    setTimeout( () => this.renderAxis() );
   }
 
   // renderText() {
@@ -303,7 +304,6 @@ class Chart extends Component {
       .append('g')
       .attr('transform', 'translate(0, 0)');
 
-    this.renderChart();
     // this.renderText();
 
     const axis = this.state.canvas
@@ -313,7 +313,8 @@ class Chart extends Component {
         'transform': `translate(0, ${height * (1 - d3Params.paddingBottom * .9)})`,
       })
 
-    this.renderAxis(axis);
+    this.renderChart();
+    // this.renderAxis(axis);
   }
 
   render() {
