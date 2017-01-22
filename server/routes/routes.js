@@ -24,7 +24,7 @@ router.get('/api/latest', (req, res) => {
 
   const stmt = `
     SELECT *
-    FROM  dow30 t1
+    FROM  dow30
     WHERE IsLatest > 0
     AND Name IN (${stockStr})
     ORDER BY Name ASC, Date DESC
@@ -55,31 +55,47 @@ router.get('/api/trend', (req, res) => {
       .join(',')
     : '';
 
-  const period    = Number(req.query.period);
-  const startTime = periodToTime(period) - 1;
+  const period = Number(req.query.period);
 
-  const stmt = `
-    SELECT *
-    FROM  dow30 t1
-    WHERE Name IN (${stockStr})
-    AND Date > ${startTime}
-    ORDER BY Name ASC, Date DESC
+  const latestTimeStmt = `
+    SELECT Date
+    FROM  dow30
+    WHERE IsLatest > 0
+    AND Name IN (${stockStr})
+    ORDER BY Date DESC
+    LIMIT 1
   `;
 
   logger.trace('Query began', Date.now());
 
-  DB.query(stmt)
-  .then((result) => {
-    logger.trace('Query ended', Date.now());
-    res.setHeader('Content-Type', 'application-json; charset=utf-8');
-    res.end(JSON.stringify(result));
-  })
-  .catch((err) => {
-    logger.trace('Query ended', Date.now());
-    logger.error(err);
-    const errMsg = { err };
-    res.end(JSON.stringify(errMsg));
-  });
+  DB.query(latestTimeStmt)
+    .then((result) => {
+      const latestTime = result[0]
+        ? result[0].Date || Date.now()
+        : Date.now();
+      return periodToTime(period, latestTime) - 1;
+    })
+    .then((startTime) => {
+      const stmt = `
+        SELECT *
+        FROM  dow30
+        WHERE Name IN (${stockStr})
+        AND Date > ${startTime}
+        ORDER BY Name ASC, Date DESC
+      `;
+      return DB.query(stmt);
+    })
+    .then((result) => {
+      logger.trace('Query ended', Date.now());
+      res.setHeader('Content-Type', 'application-json; charset=utf-8');
+      res.end(JSON.stringify(result));
+    })
+    .catch((err) => {
+      logger.trace('Query ended', Date.now());
+      logger.error(err);
+      const errMsg = { err };
+      res.end(JSON.stringify(errMsg));
+    });
 });
 
 router.get('*', (req, res) => {

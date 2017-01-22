@@ -127,7 +127,7 @@ export default class DataService {
           volume: rows[i][5],
 
           // WORKAROUND: keep the latest 2 records by flag, but speed the query up
-          isLatest: Number(i > len - AMOUNT_TO_KEEP - 1),
+          isLatest: Number(i < AMOUNT_TO_KEEP),
         });
       }
       // DB.insert(name, {
