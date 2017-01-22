@@ -46,7 +46,7 @@ router.get('/api/latest', (req, res) => {
   });
 });
 
-router.get('/api/stocks', (req, res) => {
+router.get('/api/trend', (req, res) => {
   const targetStocks = req.query.target;
   // Use '' to brace each stockName
   const stockStr = targetStocks ?
