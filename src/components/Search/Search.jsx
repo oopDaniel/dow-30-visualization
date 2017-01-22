@@ -9,25 +9,26 @@ import {
   searchFor,
   addFocus,
   removeFocus,
+  switchPeriod,
 } from './../../actions/index';
 import SearchSugestion from './SearchSugestion';
 import Tags from './Tags/Tags';
 import Period from './Period/Period';
 
 
-const propTypes = {
-  focus: PropTypes.arrayOf(PropTypes.string).isRequired,
-  search: PropTypes.object.isRequired,
-  period: PropTypes.number.isRequired,
-  openSearchbar: PropTypes.func.isRequired,
-  closeSearchbar: PropTypes.func.isRequired,
-  searchFor: PropTypes.func.isRequired,
-  addFocus: PropTypes.func.isRequired,
-  removeFocus: PropTypes.func.isRequired,
-};
-
-
 class Search extends Component {
+  static propTypes = {
+    focus: PropTypes.arrayOf(PropTypes.string).isRequired,
+    search: PropTypes.object.isRequired,
+    period: PropTypes.number.isRequired,
+    openSearchbar: PropTypes.func.isRequired,
+    closeSearchbar: PropTypes.func.isRequired,
+    searchFor: PropTypes.func.isRequired,
+    addFocus: PropTypes.func.isRequired,
+    removeFocus: PropTypes.func.isRequired,
+    switchPeriod: PropTypes.func.isRequired,
+  };
+
   constructor() {
     super();
     this.handleSearch = this.handleSearch.bind(this);
@@ -46,6 +47,7 @@ class Search extends Component {
       closeSearchbar,
       addFocus,
       removeFocus,
+      switchPeriod,
       search,
       focus,
       period,
@@ -67,6 +69,7 @@ class Search extends Component {
             />
             <Period
               period={period}
+              clickHandler={switchPeriod}
             />
           </div>
           <SearchSugestion
@@ -83,11 +86,7 @@ class Search extends Component {
       </div>
     );
   }
-
 }
-
-
-Search.propTypes = propTypes;
 
 
 const mapStateToProps = state => ({
@@ -102,6 +101,7 @@ const connectedSearch = connect(mapStateToProps, {
   searchFor,
   addFocus,
   removeFocus,
+  switchPeriod,
 })(Search);
 
 export default connectedSearch;

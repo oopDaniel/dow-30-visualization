@@ -1,7 +1,8 @@
 @import './../../../styles/color.css';
 
 :local .container {
-  flex: 0 0 16%;
+  position: relative;
+  flex: 0 0 20%;
   padding: .6rem 1.6rem;
 
   font-size: 1.4rem;
@@ -10,9 +11,62 @@
   color: $period-text;
   cursor: pointer;
 
-  transition: color .2s, border-color .2s;
+  /*    Button behavior fix   */
+  background: transparent;
+  appearance: none;
+  text-align: left;
+  outline: 0;
+
+  transition: border-color .2s;
   &:hover {
-    color: $period-text-active;
     border-color: $period-border-active;
+    & > .curr_period {
+      color: $period-text-active;
+    }
   };
 };
+
+:local .curr_period {
+  transition: color .2s;
+};
+
+:local .triangle {
+  position: absolute;
+  right: 5%;
+  top: 14%;
+  font-size: 2rem;
+};
+
+:local .item {
+  min-height: 2rem;
+  padding: .5rem 1rem;
+
+  font-size: 1.5rem;
+  border: 0 solid $search-sugest-row-border;
+  border-radius: 5px;
+  border-bottom-width: 1px;
+
+  color: $search-sugest-row-text;
+  transition: background .2s, color .2s;
+  &:hover {
+    background-color: $search-sugest-row-bg-active;
+    color: $search-sugest-row-text-active;
+  };
+};
+
+:local .isSelected {
+  background: steelblue;
+  color: #fff;
+};
+
+:local .periods_container {
+  position: absolute;
+  width: 100%;
+
+  top: 104%;
+  border: 2px solid #e2e2e2;
+  left: 0;
+
+  background-color: $search-sugest-bg;
+};
+

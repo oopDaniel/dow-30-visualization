@@ -12,8 +12,8 @@
 :local .searchbar_container {
   position: relative;
   height: 4rem;
-  width: 56%;
-  max-width: 720px;
+  width: 64%;
+  max-width: 800px;
   margin: 0 auto;
 
 
@@ -27,7 +27,7 @@
   position: relative;
   height: 4rem;
   width: 100%;
-  max-width: 720px;
+  max-width: 800px;
 
   display: flex;
   align-items: center;
@@ -36,7 +36,7 @@
 
 
 :local .searchbar {
-  flex: 0 0 80%;
+  flex: 0 0 76%;
   /*position: absolute;*/
   width: 100%;
   /*max-width: 720px;*/

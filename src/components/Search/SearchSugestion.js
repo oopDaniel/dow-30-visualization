@@ -24,7 +24,6 @@ const defaultProps = {
   isSearching: false,
 };
 
-
 const SearchSugestion = ({ isSearching, options, clickHandler }) => {
   if (isSearching) {
     return (
