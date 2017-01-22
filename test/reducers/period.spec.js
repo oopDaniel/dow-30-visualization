@@ -4,12 +4,12 @@
 import test from 'tape';
 import period from './../../src/reducers/period';
 import { SWITCH_PERIOD } from './../../src/consts/actionTypes';
-import PERIOD, { oneMonth, sixMonth } from './../../src/consts/periodEnum';
+import PERIOD, { today, sixMonth } from './../../src/consts/periodEnum';
 
 
 test('Period reducer', (assert) => {
-  let msg         = 'must return an initial period with 1 month';
-  let expect      = oneMonth;
+  let msg         = 'must return an initial period with 1 day';
+  let expect      = today;
   let returnIndex = period(undefined, { type: '' });
   let actual      = PERIOD[returnIndex];
 
