@@ -3,13 +3,34 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
 import { getStocksByFocus } from './../../reducers/selectors';
+import periodEnum, { today } from './../../consts/periodEnum';
 import styles from './Dashboard.css';
-import Chart from './Chart/Chart';
+import BarChart from './BarChart/BarChart';
+import LineChart from './LineChart/LineChart';
 import Table from './Table/Table';
 
 class Dashboard extends Component {
+  static propTypes = {
+    stocks: PropTypes.shape({
+      allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
+      byName: PropTypes.object.isRequired,
+    }).isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    period: PropTypes.number.isRequired,
+  }
+
+  renderChart(period, stocks) {
+    return periodEnum[period] === today
+      ? <BarChart stocks={stocks}/>
+      : <LineChart stocks={stocks}/>;
+  }
+
   render() {
-    const { stocks, isFetching } = this.props;
+    const {
+      stocks,
+      isFetching,
+      period,
+    } = this.props;
 
     if (isFetching) {
       return (
@@ -21,22 +42,21 @@ class Dashboard extends Component {
 
     return (
       <div className={styles.container}>
-        <Chart stocks={stocks}/>
+        {this.renderChart(period, stocks)}
         <Table stocks={stocks}/>
       </div>
     );
   }
-
 }
 
-Dashboard.propTypes = {
-};
+
 /* eslint-enable */
 
 
 const mapStateToProps = state => ({
   stocks: getStocksByFocus(state),
   isFetching: state.isFetching,
+  period: state.period,
 });
 
 const connectedDashboard = connect(mapStateToProps, null)(Dashboard);
