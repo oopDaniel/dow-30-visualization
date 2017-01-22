@@ -8,15 +8,12 @@ import createHook from './../../../helpers/d3-transition';
 import styles from './Chart.css';
 
 const d3Params = {
-  // 30% padding
   paddingLeft: .2,
   paddingTop: .1,
   paddingBottom: .1,
-  // maxWidth: 1000,
   enterDuration: 1000,
   updateDuration: 800,
   delay: 800,
-
   barWidth: 20,
 };
 
