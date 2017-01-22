@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import className from 'classnames';
+import classNames from 'classnames';
 
 import styles from './TableRow.css';
 import numFilter from './../../../helpers/number-filter';
@@ -18,7 +18,7 @@ const propTypes = {
 };
 
 const TableRow = ({ name, stock, index }) => {
-  const containerStyle = className({
+  const containerStyle = classNames({
     [styles.container]: true,
     [styles.cross_color]: index % 2 === 0,
   });
