@@ -1,0 +1,18 @@
+@import './../../../styles/color.css';
+
+:local .container {
+  flex: 0 0 16%;
+  padding: .6rem 1.6rem;
+
+  font-size: 1.4rem;
+  border: 2px solid $search-border;
+  border-radius: .4rem;
+  color: $period-text;
+  cursor: pointer;
+
+  transition: color .2s, border-color .2s;
+  &:hover {
+    color: $period-text-active;
+    border-color: $period-border-active;
+  };
+};

@@ -6,12 +6,16 @@
   padding: 2rem;
   display: flex;
   flex-direction: column;
-justify-content: center;
+  justify-content: center;
 };
 
 :local .searchbar_container {
   position: relative;
   height: 4rem;
+  width: 56%;
+  max-width: 720px;
+  margin: 0 auto;
+
 
   display: flex;
   flex-direction: column;
@@ -19,10 +23,23 @@ justify-content: center;
   justify-content: center;
 };
 
-:local .searchbar {
-  position: absolute;
-  width: 80%;
+:local .searchbar_row {
+  position: relative;
+  height: 4rem;
+  width: 100%;
   max-width: 720px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+};
+
+
+:local .searchbar {
+  flex: 0 0 80%;
+  /*position: absolute;*/
+  width: 100%;
+  /*max-width: 720px;*/
   border: 2px solid $search-border;
   background-color: transparent;
   height: 3rem;
