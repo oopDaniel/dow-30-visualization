@@ -28,7 +28,7 @@ class Period extends Component {
       <div
         key={period}
         className={itemStyle}
-        onClick={() => clickHandler(period)}
+        onClick={() => clickHandler(GetPeriodByName[period])}
       >
         {period}
       </div>

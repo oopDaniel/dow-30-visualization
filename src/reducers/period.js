@@ -5,7 +5,7 @@ import PERIOD, { today } from './../consts/periodEnum';
 function period(state = PERIOD[today], action) {
   switch (action.type) {
     case SWITCH_PERIOD: {
-      return PERIOD[action.period];
+      return action.period;
     }
     default: {
       return state;
