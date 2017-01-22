@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
 import {
   FETCH_LATEST_SUCCEEDED,
+  FETCH_TREND_SUCCEEDED,
 } from './../consts/actionTypes';
 import addStock from './addStock';
 
 
 const byName = (state = {}, action) => {
   switch (action.type) {
+    case FETCH_TREND_SUCCEEDED:
     case FETCH_LATEST_SUCCEEDED: {
       return addStock(state, action.response);
     }

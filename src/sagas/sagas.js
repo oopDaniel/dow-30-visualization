@@ -6,7 +6,10 @@ import { loadState, saveState } from './../services/localStorage';
 import * as types from './../consts/actionTypes';
 import STOCKS from './../consts/stocks';
 import * as actions from './../actions';
-import { getFocused, getStockNames } from './../reducers/selectors';
+import {
+  getFocused,
+  getStockNames,
+} from './../reducers/selectors';
 
 
 // Throttle helper func
@@ -22,10 +25,27 @@ export function* fetchLatest(ids) {
   }
 }
 
+export function* fetchTrend(ids, period) {
+  try {
+    const response = yield call(api.getTrend, ids, period);
+    yield put( actions.fetchTrendSucceeded(response) );
+  } catch (error) {
+    yield put( actions.fetchTrendFailed(error) );
+  }
+}
+
 export function* watchFetchLatest() {
   while (true) {
     const { target } = yield take(types.FETCH_LATEST_REQUEST);
     yield fork(fetchLatest, target);
+  }
+}
+
+export function* watchSwitchPeriod() {
+  while (true) {
+    const { period } = yield take(types.SWITCH_PERIOD);
+    const target = yield select(getFocused);
+    yield fork(fetchTrend, target, period);
   }
 }
 
@@ -93,5 +113,6 @@ export default function* rootSaga() {
   yield fork(init);
   yield fork(nextFocusedChanged);
   yield fork(watchFetchLatest);
+  yield fork(watchSwitchPeriod);
   yield fork(searchWordChanged);
 }

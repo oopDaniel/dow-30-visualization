@@ -7,10 +7,12 @@ import {
   FETCH_LATEST_REQUEST,
   FETCH_LATEST_SUCCEEDED,
   FETCH_LATEST_FAILED,
+  FETCH_TREND_SUCCEEDED,
+  FETCH_TREND_FAILED,
 } from './../../src/consts/actionTypes';
 
 
-test('Stock reducer', (assert) => {
+test('Latest stock reducer', (assert) => {
   const timestamp = Date.now();
   const record    = {
     Open:   123,
@@ -111,16 +113,74 @@ test('Stock reducer', (assert) => {
 
   assert.deepEqual(actual, expect, msg);
 
+
+  const prev = { allNames: ['PEN'], byName: { PEN: [] } };
+  msg    = 'must keep the previous state if fetching failed';
+  expect = prev;
+  actual = stocks(prev, { type: FETCH_LATEST_FAILED });
+
+  assert.deepEqual(actual, expect, msg);
+
   assert.end();
 });
 
-test('Latest reducer: FETCH_LATEST_FAILED', (assert) => {
-  const prev   = { allNames: ['PEN'], byName: { PEN: [] } };
 
-  const msg    = 'must keep the previous state';
-  const expect = prev;
-  const actual = stocks(prev, { type: FETCH_LATEST_FAILED });
+test('Trend stock reducer', (assert) => {
+  const timestamp = Date.now();
+  const record  = {
+    Open:   123,
+    Close:  124,
+    High:   200,
+    Low:    100,
+    Volume: 10,
+  };
+  const record2 = {
+    Open:   200,
+    Close:  200,
+    High:   200,
+    Low:    200,
+    Volume: 200,
+  };
+  const record3 = {
+    Open:   300,
+    Close:  300,
+    High:   300,
+    Low:    300,
+    Volume: 300,
+  };
+  const stockName = 'APPLE';
+  const response  = [
+    { ...record,  Name: stockName, Date: timestamp - 3 },
+    { ...record2, Name: stockName, Date: timestamp - 2 },
+    { ...record3, Name: stockName, Date: timestamp - 1 },
+  ];
+
+  const prevData = {
+    [stockName]: {
+      latest: [timestamp, timestamp + 1],
+      data: {
+        [timestamp]: record,
+        [timestamp + 1]: record,
+      },
+    },
+  };
+
+  const msg       = 'must insert the stock data into the stock::byName';
+  const processed = stocks({ byName: prevData }, { type: FETCH_TREND_SUCCEEDED, response });
+  const expect    = {
+    [stockName]: {
+      latest: [timestamp, timestamp + 1],
+      data: {
+        ...prevData[stockName].data,
+        [timestamp - 3]: record,
+        [timestamp - 2]: record2,
+        [timestamp - 1]: record3,
+      },
+    },
+  };
+  const actual = processed.byName;
 
   assert.deepEqual(actual, expect, msg);
+
   assert.end();
 });

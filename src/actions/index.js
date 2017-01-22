@@ -37,18 +37,10 @@ export function fetchLatestFailed(error) {
   };
 }
 
-export function fetchTrendRequest(target, period) {
-  return {
-    type: types.FETCH_TREND_REQUEST,
-    target,
-    period,
-  };
-}
-
-export function fetchTrendSucceeded(payload) {
+export function fetchTrendSucceeded(response) {
   return {
     type: types.FETCH_TREND_SUCCEEDED,
-    payload,
+    response,
     receivedAt: Date.now(),
   };
 }

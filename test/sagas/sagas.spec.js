@@ -17,9 +17,11 @@ import {
   nextFocusedChanged,
   callFetchLatest,
   fetchLatest,
+  fetchTrend,
   searchWordChanged,
   handleSearch,
   delay,
+  watchSwitchPeriod,
 } from './../../src/sagas/sagas';
 
 
@@ -228,6 +230,35 @@ test('Searching input handler saga', (assert) => {
   iterator = handleSearch('');
   expect   = STOCKS;
   actual   = iterator.next(STOCKS).value;
+
+  assert.deepEqual(actual, expect, msg);
+
+  assert.end();
+});
+
+
+test('Watcher for switch period saga', (assert) => {
+  const iterator = watchSwitchPeriod();
+  let msg    = 'must take SWITCH_PERIOD action';
+  let expect = take(types.SWITCH_PERIOD);
+  let actual = iterator.next().value;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  const target = ['PINEAPPLE'];
+  const period = { period: 3 };
+
+  msg      = 'must select target stocks as the next step';
+  expect   = select(getFocused);
+  actual   = iterator.next(period).value;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  msg      = 'must call handler with proper params';
+  expect   = fork(fetchTrend, target, 3);
+  actual   = iterator.next(target).value;
 
   assert.deepEqual(actual, expect, msg);
 
