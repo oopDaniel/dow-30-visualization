@@ -1,8 +1,9 @@
 import express from 'express';
 import path from 'path';
+
 import DB from './../core/Database';
 import CONFIG from './../../config';
-
+import periodToTime from './../shared/util/periodToTime';
 
 const router = express.Router();
 
@@ -21,21 +22,6 @@ router.get('/api/latest', (req, res) => {
       .join(',')
     : '';
 
-  // const stmt = `
-  //   SELECT *
-  //   FROM  dow30 t1
-  //   INNER JOIN
-  //   (
-  //       SELECT Max(Date) Date, Name
-  //       FROM   dow30
-  //       WHERE Name IN (${stockStr})
-  //       GROUP BY name, Date
-  //   ) AS t2
-  //       ON t1.Name = t2.Name
-  //       AND t1.Date = t2.Date
-  //   ORDER BY date DESC
-  // `;
-
   const stmt = `
     SELECT *
     FROM  dow30 t1
@@ -49,7 +35,42 @@ router.get('/api/latest', (req, res) => {
   DB.query(stmt)
   .then((result) => {
     logger.trace('Query ended', Date.now());
-    console.log(result);
+    res.setHeader('Content-Type', 'application-json; charset=utf-8');
+    res.end(JSON.stringify(result));
+  })
+  .catch((err) => {
+    logger.trace('Query ended', Date.now());
+    logger.error(err);
+    const errMsg = { err };
+    res.end(JSON.stringify(errMsg));
+  });
+});
+
+router.get('/api/stocks', (req, res) => {
+  const targetStocks = req.query.target;
+  // Use '' to brace each stockName
+  const stockStr = targetStocks ?
+    targetStocks.split(',')
+      .map(s => `'${s}'`)
+      .join(',')
+    : '';
+
+  const period    = Number(req.query.period);
+  const startTime = periodToTime(period) - 1;
+
+  const stmt = `
+    SELECT *
+    FROM  dow30 t1
+    WHERE Name IN (${stockStr})
+    AND Date > ${startTime}
+    ORDER BY Name ASC, Date DESC
+  `;
+
+  logger.trace('Query began', Date.now());
+
+  DB.query(stmt)
+  .then((result) => {
+    logger.trace('Query ended', Date.now());
     res.setHeader('Content-Type', 'application-json; charset=utf-8');
     res.end(JSON.stringify(result));
   })
@@ -65,9 +86,5 @@ router.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../..', 'index.html'));
 });
 
-// router.get(/^\/((?!api).*)$/, (req, res) => {
-//   console.log('get all')
-//   res.sendFile(path.join(__dirname, '..', 'index.html'));
-// });
-//
+
 export default router;
