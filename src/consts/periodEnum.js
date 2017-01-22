@@ -1,10 +1,10 @@
 
-export const today      = 'TODAY';
-export const oneWeek    = 'ONE_WEEK';
-export const oneMonth   = 'ONE_MONTH';
-export const threeMonth = 'THREE_MONTHS';
-export const sixMonth   = 'SIX_MONTHS';
-export const oneYear    = 'ONE_YEAR';
+export const today      = 'Today';
+export const oneWeek    = '1 week';
+export const oneMonth   = '1 month';
+export const threeMonth = '3 months';
+export const sixMonth   = '6 months';
+export const oneYear    = '1 year';
 
 const periodEnum = {
   0: today,

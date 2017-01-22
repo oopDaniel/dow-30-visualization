@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
+
 import styles from './Period.css';
+import periodEnum from './../../../consts/periodEnum';
 
 const propTypes = {
   period: PropTypes.number.isRequired,
@@ -9,7 +11,7 @@ const propTypes = {
 // switchHandler
 const Period = ({ period }) => (
   <div className={styles.container}>
-    {period}
+    {periodEnum[period]}
   </div>
 );
 
