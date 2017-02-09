@@ -22,7 +22,10 @@ class Dashboard extends Component {
   renderChart(period, stocks) {
     return periodEnum[period] === today
       ? <BarChart stocks={stocks}/>
-      : <LineChart stocks={stocks}/>;
+      : <LineChart
+          stocks={stocks}
+          period={period}
+        />;
   }
 
   render() {

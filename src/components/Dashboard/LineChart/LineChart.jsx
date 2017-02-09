@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 
 import numFilter from './../../../helpers/number-filter';
 import createHook from './../../../helpers/d3-transition';
+import { GetTicksByPeriod } from './../../../consts/periodEnum';
 import styles from './LineChart.css';
 
 const d3Params = {
@@ -24,6 +25,7 @@ class LineChart extends Component {
       allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
       byName: PropTypes.object.isRequired,
     }).isRequired,
+    period: PropTypes.number.isRequired,
   };
 
   constructor(props) {
@@ -34,6 +36,7 @@ class LineChart extends Component {
     this.extractData    = this.extractData.bind(this);
     this.renderChart    = this.renderChart.bind(this);
     this.renderAxis     = this.renderAxis.bind(this);
+    this.renderDots     = this.renderDots.bind(this);
 
     const scale = {
       x:   d3.scale.linear(),
@@ -50,6 +53,7 @@ class LineChart extends Component {
       data:   [],
       height: 0,
       width:  0,
+      color:  d3.scale.category10(),
       scale,
     };
   }
@@ -100,7 +104,8 @@ class LineChart extends Component {
 
     Object.keys(stockNames)
       .forEach((name) => {
-        const stockDataset = Object.keys(stockNames[name].data)
+        console.log(stockNames[name]);
+        const stockDataset = stockNames[name].period
           .map((time) => ({
               name,
               time,
@@ -128,7 +133,7 @@ class LineChart extends Component {
     // const { height } = this.state;
     // const update = this.state.canvas
     //   .selectAll('rect')
-    //   .data(this.state.data, d => d.name);
+    //   .data(this.state.data);
     // const enter  = update.enter();
     // const exit   = update.exit();
 
@@ -143,24 +148,10 @@ class LineChart extends Component {
     this.state.canvas.selectAll('.line').remove();
 
     dataNest.forEach((lineData) => {
-      // console.info(lineData);
-
-      // const update = this.state.canvas
-      //   .selectAll('path')
-      //   .data(lineData.values);
-      // const enter  = update.enter();
-      // const exit   = update.exit();
-
-      // exit.remove();
-
-      // update
-      //   .append('path')
-      //   .attr('class', 'line')
-      //   .attr('d', line(lineData.values));
-
       this.state.canvas
         .append('path')
         .attr('class', 'line')
+        .attr('stroke', this.state.color(lineData.key))
         .attr('d', line(lineData.values))
         .transition()
         .call(this.state.hook);
@@ -168,9 +159,6 @@ class LineChart extends Component {
     // const tooltip = d3.select('#chart-container').append('div')
     //   .attr('class', 'tooltip')
     //   .style('opacity', 0);
-
-
-
 
     // exit
     //   .transition()
@@ -231,9 +219,35 @@ class LineChart extends Component {
     setTimeout(() => this.renderAxis());
   }
 
+  renderDots() {
+    const period = this.props.period;
+    const radius = period > 4
+      ? 0
+      : this.props.period === 2
+        ? 2
+        : this.props.period > 2 ? 1 : 3;
+    const update = this.state.canvas
+      .selectAll('.dot')
+      .data(this.state.data);
+    const enter = update.enter();
+    const exit  = update.exit();
+
+    exit.remove();
+
+    enter.append('circle')
+      .attr({
+        class: 'dot',
+        fill: d => this.state.color(d.name),
+        cx: d => this.state.scale.x(d.time),
+        cy: d => this.state.scale.y(d.value),
+        r: radius,
+     });
+  }
+
   renderAxis(target = d3.select('.x-axis')) {
+    const ticks = GetTicksByPeriod[this.props.period];
     this.state.xAxis
-      .ticks(5)
+      .ticks(ticks)
       .tickFormat( d => d3.time.format('%m/%d')(new Date(d)))
       .scale(this.state.scale.x);
 
@@ -244,15 +258,11 @@ class LineChart extends Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log("%creceive", 'color:red;font-size:3rem');
-    console.log(props);
     this.extractData(props);
     this.setDomain(this.state.data);
 
-    console.info(this.state.data);
-    // debugger
-
     this.renderChart();
+    this.renderDots();
   }
 
   shouldComponentUpdate() { return false; }

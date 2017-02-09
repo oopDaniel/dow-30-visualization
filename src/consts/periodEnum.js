@@ -24,6 +24,16 @@ export const GetPeriodByName = {
   [oneYear]: 5,
 };
 
+// The count of ticks in x-axis
+export const GetTicksByPeriod = {
+  0: 1,
+  1: 7,
+  2: 7,
+  3: 12,
+  4: 12,
+  5: 12,
+};
+
 const periodEnum = {
   ...GetPeriodByName,
   ...GetNameByPeriod,
