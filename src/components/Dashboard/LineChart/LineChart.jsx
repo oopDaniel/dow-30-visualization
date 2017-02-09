@@ -98,18 +98,19 @@ class LineChart extends Component {
 
   // <renderTarget> subjects to change if UI interaction was allowed later
   extractData({ stocks, renderTarget = 'Open' } = {}) {
-    console.error(stocks);
     const stockNames = stocks.byName;
     let data = [];
 
     Object.keys(stockNames)
       .forEach((name) => {
-        console.log(stockNames[name]);
-        const stockDataset = stockNames[name].period
+        const period = stockNames[name].period;
+        const latest  = period[0];
+        const stockDataset = period
           .map((time) => ({
               name,
               time,
-              value: stockNames[name].data[time][renderTarget]
+              value: stockNames[name].data[time][renderTarget],
+              isLast: time === latest,
           }));
         data = [...data, ...stockDataset];
       });
@@ -156,6 +157,23 @@ class LineChart extends Component {
         .transition()
         .call(this.state.hook);
     })
+
+    const text = this.state.canvas
+      .selectAll('.text')
+      .data(this.state.data.filter(d => d.isLast))
+
+    text.exit().remove();
+
+    text.enter()
+      .append('g')
+      .attr('class', 'text')
+      .append('text')
+      .attr('transform', (d) =>
+          `translate(${this.state.scale.x(d.time)}, ${this.state.scale.y(d.value)})`)
+      .attr('x', 6)
+      .attr('dy', '.35em')
+      .text(d => d.name);
+
     // const tooltip = d3.select('#chart-container').append('div')
     //   .attr('class', 'tooltip')
     //   .style('opacity', 0);
@@ -221,7 +239,7 @@ class LineChart extends Component {
 
   renderDots() {
     const period = this.props.period;
-    const radius = period > 4
+    const dotSize = period > 4
       ? 0
       : this.props.period === 2
         ? 2
@@ -240,7 +258,7 @@ class LineChart extends Component {
         fill: d => this.state.color(d.name),
         cx: d => this.state.scale.x(d.time),
         cy: d => this.state.scale.y(d.value),
-        r: radius,
+        r: dotSize,
      });
   }
 

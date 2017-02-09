@@ -52,16 +52,19 @@
   path {
     /* display: none; */
      stroke-width: 1px;
-    stroke: #6a7f8e;
+    stroke: $dashboard-text;
     stroke-width: 2;
     fill: none;
   }
   line {
     /* stroke-width: 1px; */
-    stroke: #6a7f8e;
+    stroke: $dashboard-text;
     stroke-width: 2;
     shape-rendering: crispEdges;
     /* fill: none; */
+  }
+  text {
+    fill: $dashboard-text;
   }
 }
 
@@ -100,4 +103,8 @@
 .line {
     stroke-width: 1;
     fill: none;
+}
+
+.text {
+  fill: $dashboard-title-text;
 }
