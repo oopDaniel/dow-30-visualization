@@ -12,10 +12,13 @@ const addStock = (state, res) => {
     if (!targetStock) {
       result[stock.Name] = {
         latest: [stock.Date, stock.Date],
+        period: [],
         data: {},
       };
       targetStock = result[stock.Name];
     }
+
+    targetStock.period.push(stock.Date);
 
     // Has no the record for this specific time, insert
     if (!targetStock.data[stock.Date]) {
