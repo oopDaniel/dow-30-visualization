@@ -121,23 +121,7 @@ class LineChart extends Component {
     };
   }
 
-
-  getThemeColor(data) {
-    const isUpTrend = data.trend > 0 ? styles.theme_up : styles.theme_down;
-    return data.trend === 0
-      ? styles.theme_unchanged
-      : isUpTrend;
-  }
-
   renderChart() {
-    // debugger
-    // const { height } = this.state;
-    // const update = this.state.canvas
-    //   .selectAll('rect')
-    //   .data(this.state.data);
-    // const enter  = update.enter();
-    // const exit   = update.exit();
-
     const line = d3.svg.line()
       .x(d => this.state.scale.x(d.time) )
       .y(d => this.state.scale.y(d.value) );
@@ -174,76 +158,23 @@ class LineChart extends Component {
       .attr('dy', '.35em')
       .text(d => d.name);
 
-    // const tooltip = d3.select('#chart-container').append('div')
-    //   .attr('class', 'tooltip')
-    //   .style('opacity', 0);
-
-    // exit
-    //   .transition()
-    //   .attr('y', height - (d3Params.paddingBottom * height))
-    //   .attr('height', 0)
-    //   .attr('opacity', 0.6)
-    //   .remove();
-
-    // update
-    //   .transition()
-    //   .attr('y', d => this.state.scale.y(d.prevValue) - (d3Params.paddingBottom * height))
-    //   .attr('height', d => height - this.state.scale.y(d.prevValue))
-    //   .attr('x', (d, i) => this.state.scale.x(i + 1) - (d3Params.barWidth / 2))
-    //   .duration(d3Params.updateDuration)
-    //   .call(this.state.hook);
-
-    // enter.append('rect')
-    //   .attr('class', this.getThemeColor)
-    //   .attr('name', d => d.name)  // For getting correct index of rect in tooltips
-    //   .attr('x', (d, i) => this.state.scale.x(i + 1) - (d3Params.barWidth / 2))
-    //   .attr('y', () => height - (d3Params.paddingBottom * height))
-    //   .attr('width', d3Params.barWidth)
-    //   .attr('height', 0)
-      // .on('mouseover', (d) => {
-      //   const rects   = d3.selectAll('rect')[0];
-      //   const index   = rects.findIndex(rect => rect.attributes.name.value === d.name);
-      //   const pos     = rects[index] && rects[index].getClientRects()[0];
-      //   const leftPos = (pos && pos.left) - d3Params.barWidth - 2 || 0;
-      //   const topPos  = (pos && pos.top) - (height * (d3Params.paddingBottom / 2)) || 0;
-      //   tooltip.transition()
-      //     .duration(200)
-      //     .style('opacity', 0.9);
-      //   tooltip.html(`
-      //     <div class="inner-toolip">
-      //     ${d.name}
-      //     <br/>
-      //     <span class=${this.getThemeColor(d)}><b>${numFilter(d.value)}</b></span>
-      //     <br/>
-      //     (${numFilter(d.prevValue)})
-      //     </div>
-      //   `)
-      //     .style('left', `${leftPos}px`)
-      //     .style('top', `${topPos}px`);
-      // })
-      // .on('mouseout', () => {
-      //   tooltip.transition()
-      //     .duration(400)
-      //     .style('opacity', 0);
-      // })
-
-    // .transition()
-    //   .delay((d, i) => i * d3Params.delay)
-    //   .attr('y', d => this.state.scale.y(d.value) - d3Params.paddingBottom * height)
-    //   .attr('height', d => height - this.state.scale.y(d.value))
-    //   .duration(d3Params.enterDuration)
-    //   .call(this.state.hook);
-
     setTimeout(() => this.renderAxis());
   }
 
   renderDots() {
+    const { height } = this.state;
     const period = this.props.period;
     const dotSize = period > 4
       ? 0
-      : this.props.period === 2
+      : this.props.period === 3
         ? 2
-        : this.props.period > 2 ? 1 : 3;
+        : this.props.period > 3 ? 1 : 3;
+
+    const tooltip = d3.select('#chart-container').append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
+    const timeFormater = d3.time.format('%m.%d.%y');
+
     const update = this.state.canvas
       .selectAll('.dot')
       .data(this.state.data);
@@ -255,11 +186,36 @@ class LineChart extends Component {
     enter.append('circle')
       .attr({
         class: 'dot',
+        name: (d, i) => `${d.name}${i}`,
         fill: d => this.state.color(d.name),
         cx: d => this.state.scale.x(d.time),
         cy: d => this.state.scale.y(d.value),
         r: dotSize,
-     });
+      })
+      .on('mouseover', (d, i) => {
+        const dots = d3.selectAll('circle')[0];
+        const index = dots.findIndex(dot => dot.attributes.name.value === `${d.name}${i}`);
+        const pos   = dots[index] && dots[index].getClientRects()[0];;
+        const leftPos = (pos && pos.left) - d3Params.barWidth - 2 || 0;
+        const topPos  = (pos && pos.top) - (height * (d3Params.paddingBottom / 2)) || 0;
+        tooltip.transition()
+          .duration(200)
+          .style('opacity', 0.9);
+        tooltip.html(`
+          <div class="inner-toolip">
+          ${timeFormater(new Date(d.time))}
+          <br/>
+          <span class="toolip-value"><b>${numFilter(d.value)}</b></span>
+          </div>
+        `)
+          .style('left', `${leftPos}px`)
+          .style('top', `${topPos}px`);
+      })
+      .on('mouseout', () => {
+        tooltip.transition()
+          .duration(400)
+          .style('opacity', 0);
+      })
   }
 
   renderAxis(target = d3.select('.x-axis')) {

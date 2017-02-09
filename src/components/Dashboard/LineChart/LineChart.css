@@ -81,7 +81,7 @@
 .inner-toolip {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 80%;
   padding: 8px;
   background: $tooltip-bg;
   color: $tooltip-text;
@@ -98,6 +98,11 @@
     margin-left: -10px;
     top: 100%;
   };
+
+  .toolip-value {
+    font-size: 2em;
+    color: wheat;
+  }
 }
 
 .line {
@@ -107,4 +112,8 @@
 
 .text {
   fill: $dashboard-title-text;
+}
+
+.dot {
+  cursor: pointer;
 }
