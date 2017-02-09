@@ -28,7 +28,7 @@ export default (period, today = Date.now()) => {
 
     // 1 year
     case 5: {
-      date.setYear(date.getUTCYear() - 1);
+      date.setYear(date.getUTCFullYear() - 1);
       return Number(date);
     }
 
