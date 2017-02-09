@@ -1,0 +1,104 @@
+@import './../../../styles/color.css';
+
+:local .container {
+  height: 400px;
+  display: flex;
+  justify-content: center;
+}
+
+:local .inner_container {
+  width: 80%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+:local .svg_container {
+  height: 100px;
+  width: 100px;
+}
+
+:local .chart {
+  height: 100px;
+  width: 100px;
+}
+
+:local .theme_up {
+  fill: $theme-success;
+  color: $theme-success;
+  &:hover {
+    fill: $theme-success-hover;
+  }
+}
+
+:local .theme_down {
+  fill: $theme-danger;
+  color: $theme-danger;
+  &:hover {
+    fill: $theme-danger-hover;
+  }
+}
+
+:local .theme_unchanged {
+  fill: lightsteelblue;
+  color: lightsteelblue;
+}
+
+:local .bars {
+}
+
+.x-axis {
+  path {
+    /* display: none; */
+     stroke-width: 1px;
+    stroke: #6a7f8e;
+    stroke-width: 2;
+    fill: none;
+  }
+  line {
+    /* stroke-width: 1px; */
+    stroke: #6a7f8e;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+    /* fill: none; */
+  }
+}
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 64px;
+  height: 72px;
+  margin-top: -56px;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+.inner-toolip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  background: $tooltip-bg;
+  color: $tooltip-text;
+  &:before {
+    position: absolute;
+    content: "";
+    height: 0;
+    width: 0;
+    pointer-events: none;
+    border: solid transparent;
+    border-top-color: $tooltip-bg;
+    border-width: 10px;
+    left: 50%;
+    margin-left: -10px;
+    top: 100%;
+  };
+}
+
+.line {
+    stroke: steelblue;
+    stroke-width: 1;
+    fill: none;
+}
