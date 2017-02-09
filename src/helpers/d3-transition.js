@@ -1,18 +1,27 @@
+/* eslint-disable no-param-reassign, no-console */
+import { isEmptyObj } from './util';
+
 const createHook = (comp, elem, stateName) => {
   const elems = new Map();
   let interval;
 
   const updateState = () => {
-    comp.setState({ [stateName]: elem.toReact() });
-    comp.forceUpdate();
+    // Check ref in comp to ensure comp is still mounting
+    if (!isEmptyObj(comp.refs)) {
+      comp.setState({ [stateName]: elem.toReact() });
+
+      try {
+        comp.forceUpdate();
+      } catch (e) {
+        console.error('fail to update', e);
+      }
+    }
   };
 
   // To React DOM first
   setTimeout(updateState);
 
-  /* eslint-disable no-param-reassign */
   comp.isAnimating = () => !!interval;
-  /* eslint-enable */
 
   return (transition) => {
     transition.each((el) => {
