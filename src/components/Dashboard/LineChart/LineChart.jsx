@@ -5,7 +5,11 @@ import * as d3 from 'd3';
 
 import numFilter from './../../../helpers/number-filter';
 import createHook from './../../../helpers/d3-transition';
-import { GetTicksByPeriod } from './../../../consts/periodEnum';
+import {
+  GetTicksByPeriod,
+  GetNameByPeriod,
+  oneWeek,
+} from './../../../consts/periodEnum';
 import styles from './LineChart.css';
 
 const d3Params = {
@@ -31,13 +35,13 @@ class LineChart extends Component {
   constructor(props) {
     super(props);
 
-    this.setRange       = this.setRange.bind(this);
-    this.setDomain      = this.setDomain.bind(this);
-    this.extractData    = this.extractData.bind(this);
-    this.renderChart    = this.renderChart.bind(this);
-    this.renderAxis     = this.renderAxis.bind(this);
-    this.renderText     = this.renderText.bind(this);
-    this.renderDots     = this.renderDots.bind(this);
+    this.setRange    = this.setRange.bind(this);
+    this.setDomain   = this.setDomain.bind(this);
+    this.extractData = this.extractData.bind(this);
+    this.renderChart = this.renderChart.bind(this);
+    this.renderAxis  = this.renderAxis.bind(this);
+    this.renderText  = this.renderText.bind(this);
+    this.renderDots  = this.renderDots.bind(this);
 
     const scale = {
       x:   d3.scale.linear(),
@@ -50,7 +54,7 @@ class LineChart extends Component {
       chart:  <span />,
       canvas: null,
       hook:   null,
-      xAxis:  d3.svg.axis().orient('bottom'),
+      xAxis:  null,
       data:   [],
       height: 0,
       width:  0,
@@ -242,10 +246,20 @@ class LineChart extends Component {
   }
 
   renderAxis(target = d3.select('.x-axis')) {
-    const ticks = GetTicksByPeriod[this.props.period];
+    const isOneWeek = GetNameByPeriod[this.props.period] === oneWeek;
+    const xAxis     = d3.svg.axis().orient('bottom');
+    const tickFormat = d => d3.time.format('%m/%d')(new Date(d));
+
+    if (isOneWeek) {
+      this.state.xAxis = xAxis
+        .tickValues(this.state.data.map(d => d.time));
+    } else {
+      this.state.xAxis = xAxis
+        .ticks(GetTicksByPeriod[this.props.period]);
+    }
+
     this.state.xAxis
-      .ticks(ticks)
-      .tickFormat( d => d3.time.format('%m/%d')(new Date(d)))
+      .tickFormat(tickFormat)
       .scale(this.state.scale.x);
 
     target

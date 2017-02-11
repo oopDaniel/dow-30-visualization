@@ -80,7 +80,7 @@
 
 .inner-toolip {
   position: relative;
-  width: 100%;
+  width: 120%;
   height: 80%;
   padding: 8px;
   background: $tooltip-bg;
