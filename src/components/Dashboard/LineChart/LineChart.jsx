@@ -36,6 +36,7 @@ class LineChart extends Component {
     this.extractData    = this.extractData.bind(this);
     this.renderChart    = this.renderChart.bind(this);
     this.renderAxis     = this.renderAxis.bind(this);
+    this.renderText     = this.renderText.bind(this);
     this.renderDots     = this.renderDots.bind(this);
 
     const scale = {
@@ -84,6 +85,10 @@ class LineChart extends Component {
     // X-domain
     // Extend both min and max in x-axis to render a better UI
     this.state.scale.x.domain(d3.extent(data, d => d.time))
+    // const xDomain = d3.extent(data, d => d.time);
+    // if (xDomain[0]) xDomain[0] -= 86400000;
+    // if (xDomain[1]) xDomain[1] += 86400000;
+    // this.state.scale.x.domain(xDomain)
       .nice();
 
     // Y-domain
@@ -140,23 +145,7 @@ class LineChart extends Component {
         .attr('d', line(lineData.values))
         .transition()
         .call(this.state.hook);
-    })
-
-    const text = this.state.canvas
-      .selectAll('.text')
-      .data(this.state.data.filter(d => d.isLast))
-
-    text.exit().remove();
-
-    text.enter()
-      .append('g')
-      .attr('class', 'text')
-      .append('text')
-      .attr('transform', (d) =>
-          `translate(${this.state.scale.x(d.time)}, ${this.state.scale.y(d.value)})`)
-      .attr('x', 6)
-      .attr('dy', '.35em')
-      .text(d => d.name);
+    });
 
     setTimeout(() => this.renderAxis());
   }
@@ -182,6 +171,16 @@ class LineChart extends Component {
     const exit  = update.exit();
 
     exit.remove();
+
+    update.transition()
+      .attr({
+        class: 'dot',
+        name: (d, i) => `${d.name}${i}`,
+        fill: d => this.state.color(d.name),
+        cx: d => this.state.scale.x(d.time),
+        cy: d => this.state.scale.y(d.value),
+        r: dotSize,
+      })
 
     enter.append('circle')
       .attr({
@@ -218,6 +217,30 @@ class LineChart extends Component {
       })
   }
 
+  renderText() {
+    const update = this.state.canvas
+      .selectAll('.text')
+      .data(this.state.data.filter(d => d.isLast))
+
+    update.exit().remove();
+
+    update.transition()
+      .attr('transform', (d) =>
+          `translate(${this.state.scale.x(d.time)}, ${this.state.scale.y(d.value)})`)
+      .attr('x', 6)
+      .attr('dy', '.35em')
+      .text(d => d.name);
+
+    update.enter()
+      .append('text')
+      .attr('class', 'text')
+      .attr('transform', (d) =>
+          `translate(${this.state.scale.x(d.time)}, ${this.state.scale.y(d.value)})`)
+      .attr('x', 6)
+      .attr('dy', '.35em')
+      .text(d => d.name);
+  }
+
   renderAxis(target = d3.select('.x-axis')) {
     const ticks = GetTicksByPeriod[this.props.period];
     this.state.xAxis
@@ -236,6 +259,7 @@ class LineChart extends Component {
     this.setDomain(this.state.data);
 
     this.renderChart();
+    this.renderText();
     this.renderDots();
   }
 
