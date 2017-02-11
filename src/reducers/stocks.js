@@ -28,6 +28,7 @@ const byName = (state = {}, action) => {
 
 const allNames = (state = [], action) => {
   switch (action.type) {
+    case FETCH_TREND_SUCCEEDED:
     case FETCH_LATEST_SUCCEEDED: {
       const stockNames = [
         ...state,
