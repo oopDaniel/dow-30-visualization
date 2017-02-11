@@ -6,9 +6,11 @@ import { loadState, saveState } from './../services/localStorage';
 import * as types from './../consts/actionTypes';
 import STOCKS from './../consts/stocks';
 import * as actions from './../actions';
+import { today, GetNameByPeriod } from './../consts/periodEnum';
 import {
   getFocused,
   getStockNames,
+  getPeriod,
 } from './../reducers/selectors';
 
 
@@ -59,7 +61,12 @@ export function* nextFocusedChanged() {
       && !stockNames.includes(target);
 
     if (shouldCallAPI) {
-      yield fork(fetchLatest, [target]);
+      const period = yield select(getPeriod);
+      if (GetNameByPeriod[period] === today) {
+        yield fork(fetchLatest, [target]);
+      } else {
+        yield fork(fetchTrend, [target], period);
+      }
     }
 
     const focused = yield select(getFocused);
