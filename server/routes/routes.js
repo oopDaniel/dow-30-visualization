@@ -13,7 +13,9 @@ if (CONFIG.log.useLogger) {
 }
 
 
-router.get('/api/latest', (req, res) => {
+// ---- API Handlers ----
+
+const latestHandler = (req, res) => {
   const targetStocks = req.query.target;
   // Use '' to brace each stockName
   const stockStr = targetStocks ?
@@ -44,9 +46,10 @@ router.get('/api/latest', (req, res) => {
     const errMsg = { err };
     res.end(JSON.stringify(errMsg));
   });
-});
+};
 
-router.get('/api/trend', (req, res) => {
+
+const trendHandler = (req, res) => {
   const targetStocks = req.query.target;
   // Use '' to brace each stockName
   const stockStr = targetStocks ?
@@ -96,9 +99,41 @@ router.get('/api/trend', (req, res) => {
       const errMsg = { err };
       res.end(JSON.stringify(errMsg));
     });
-});
+};
 
-router.get('*', (req, res) => {
+
+const apiHandler = (name, req, res) => {
+  switch (name) {
+    case 'latest':
+      return latestHandler(req, res);
+    case 'trend':
+      return trendHandler(req, res);
+    default:
+      return logger.error(`Tried to request the unknown '${name}' handler`);
+  }
+};
+
+const requestHandler = (req, res, next) => {
+  const url       = req.url;
+  const isAPICall = /api\//.test(url);
+
+  if (isAPICall) {
+    const match = url.match(/api\/([^\?]*)\??/);
+
+    const apiName = match[1];
+    if (apiName) {
+      apiHandler(apiName, req, res);
+      return;
+    }
+  }
+  next();
+};
+
+
+router.get('/api/latest', latestHandler);
+router.get('/api/trend', trendHandler);
+
+router.get('*', requestHandler, (req, res) => {
   res.sendFile(path.join(__dirname, '../..', 'index.html'));
 });
 
