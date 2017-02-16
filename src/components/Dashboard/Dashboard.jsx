@@ -21,7 +21,7 @@ class Dashboard extends Component {
 
   renderChart(period, stocks) {
     return periodEnum[period] === today
-      ? <BarChart stocks={stocks}/>
+      ? <BarChart stocks={stocks} />
       : <LineChart
           stocks={stocks}
           period={period}
@@ -46,14 +46,11 @@ class Dashboard extends Component {
     return (
       <div className={styles.container}>
         {this.renderChart(period, stocks)}
-        <Table stocks={stocks}/>
+        <Table stocks={stocks} />
       </div>
     );
   }
 }
-
-
-/* eslint-enable */
 
 
 const mapStateToProps = state => ({
