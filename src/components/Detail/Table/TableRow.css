@@ -1,0 +1,25 @@
+@import './../../../styles/color.css';
+
+:local .container {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  border-bottom: 1px solid $table-border;
+  border-radius: .5rem;
+  cursor: default;
+  color: $dashboard-text;
+
+  > * {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+:local .cross_color {
+  background: $table-cross;
+}
+
+:local .emphasize {
+  color: $table-date;
+};
