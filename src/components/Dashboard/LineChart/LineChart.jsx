@@ -1,4 +1,4 @@
-/*eslint-disable*/
+/* eslint-disable */
 import React, { PropTypes, Component } from 'react';
 import Faux from 'react-faux-dom';
 import * as d3 from 'd3';
@@ -63,6 +63,58 @@ class LineChart extends Component {
     };
   }
 
+  componentDidMount() {
+    const { clientWidth: width, clientHeight: height }
+      = this.refs.container;
+
+    const faux = new Faux.Element('div');
+    faux.setAttribute('class', styles.inner_container);
+    faux.setAttribute('id', 'as');
+
+    // Keep the width & height for later usage
+    this.state = {
+      ...this.state,
+      hook: createHook(this, faux, 'chart'),
+      width,
+      height,
+    };
+
+    // Set range according to the visible area of client
+    this.setRange({ width, height });
+
+    // Set domain
+    this.extractData(this.props);
+    this.setDomain(this.state.data);
+
+    this.state.canvas = d3.select(faux).append('svg')
+      .attr('width', '100%')
+      .attr('height', height)
+      .append('g')
+      .attr('transform', 'translate(0, 0)');
+
+    this.state.canvas
+      .append('g')
+      .attr({
+        class: 'x-axis',
+        transform: `translate(0, ${height * (1 - (d3Params.paddingBottom * 0.9))})`,
+      });
+
+    this.renderChart();
+    this.renderText();
+    this.renderDots();
+  }
+
+  componentWillReceiveProps(props) {
+    this.extractData(props);
+    this.setDomain(this.state.data);
+
+    this.renderChart();
+    this.renderText();
+    this.renderDots();
+  }
+
+  shouldComponentUpdate() { return false; }
+
   setRange({ width, height }) {
     if (typeof width !== 'number' || typeof height !== 'number') {
       throw new Error('Incorrect input type');
@@ -116,10 +168,10 @@ class LineChart extends Component {
         const latest  = period[0];
         const stockDataset = period
           .map((time) => ({
-              name,
-              time,
-              value: stockNames[name].data[time][renderTarget],
-              isLast: time === latest,
+            name,
+            time,
+            value: stockNames[name].data[time][renderTarget],
+            isLast: time === latest,
           }));
         data = [...data, ...stockDataset];
       });
@@ -132,8 +184,8 @@ class LineChart extends Component {
 
   renderChart() {
     const line = d3.svg.line()
-      .x(d => this.state.scale.x(d.time) )
-      .y(d => this.state.scale.y(d.value) );
+      .x(d => this.state.scale.x(d.time))
+      .y(d => this.state.scale.y(d.value));
 
     const dataNest = d3.nest()
       .key(d => d.name)
@@ -184,7 +236,7 @@ class LineChart extends Component {
         cx: d => this.state.scale.x(d.time),
         cy: d => this.state.scale.y(d.value),
         r: dotSize,
-      })
+      });
 
     enter.append('circle')
       .attr({
@@ -218,13 +270,13 @@ class LineChart extends Component {
         tooltip.transition()
           .duration(400)
           .style('opacity', 0);
-      })
+      });
   }
 
   renderText() {
     const update = this.state.canvas
       .selectAll('.text')
-      .data(this.state.data.filter(d => d.isLast))
+      .data(this.state.data.filter(d => d.isLast));
 
     update.exit().remove();
 
@@ -266,56 +318,6 @@ class LineChart extends Component {
       .transition()
       .duration(d3Params.updateDuration)
       .call(this.state.xAxis);
-  }
-
-  componentWillReceiveProps(props) {
-    this.extractData(props);
-    this.setDomain(this.state.data);
-
-    this.renderChart();
-    this.renderText();
-    this.renderDots();
-  }
-
-  shouldComponentUpdate() { return false; }
-
-  componentDidMount() {
-    const { clientWidth: width, clientHeight: height }
-      = this.refs.container;
-
-    const faux = new Faux.Element('div');
-    faux.setAttribute('class', styles.inner_container);
-    faux.setAttribute('id', 'as');
-
-    // Keep the width & height for later usage
-    this.state = {
-      ...this.state,
-      hook: createHook(this, faux, 'chart'),
-      width,
-      height,
-    };
-
-    // Set range according to the visible area of client
-    this.setRange({ width, height });
-
-    // Set domain
-    this.extractData(this.props);
-    this.setDomain(this.state.data);
-
-    this.state.canvas = d3.select(faux).append('svg')
-      .attr('width', '100%')
-      .attr('height', height)
-      .append('g')
-      .attr('transform', 'translate(0, 0)');
-
-    this.state.canvas
-      .append('g')
-      .attr({
-        class: 'x-axis',
-        transform: `translate(0, ${height * (1 - (d3Params.paddingBottom * 0.9))})`,
-      });
-
-    this.renderChart();
   }
 
   render() {
