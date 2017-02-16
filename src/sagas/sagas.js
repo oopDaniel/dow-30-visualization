@@ -21,6 +21,7 @@ export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 export function* fetchLatest(ids) {
   try {
     const response = yield call(api.getLatest, ids);
+    if (response.error) throw response.error;
     yield put( actions.fetchLatestSucceeded(response) );
   } catch (error) {
     yield put( actions.fetchLatestFailed(error) );
@@ -30,6 +31,7 @@ export function* fetchLatest(ids) {
 export function* fetchTrend(ids, period) {
   try {
     const response = yield call(api.getTrend, ids, period);
+    if (response.error) throw response.error;
     yield put( actions.fetchTrendSucceeded(response) );
   } catch (error) {
     yield put( actions.fetchTrendFailed(error) );
@@ -57,6 +59,8 @@ export function* nextFocusedChanged() {
       = yield take([types.ADD_FOCUS, types.REMOVE_FOCUS]);
 
     const stockNames = yield select(getStockNames);
+
+
     const shouldCallAPI = actionType === types.ADD_FOCUS
       && !stockNames.includes(target);
 
@@ -70,6 +74,8 @@ export function* nextFocusedChanged() {
     }
 
     const focused = yield select(getFocused);
+
+
     yield call(saveState, focused.join(','));
   }
 }

@@ -35,12 +35,13 @@ test('Latest stock reducer', (assert) => {
   const response3 = [{ ...record2, Name: newStock, Date: timestamp + 1 }];
 
 
-  let msg       = 'must insert the brand new stock into the stock::byName';
+  let msg       = 'must insert the brand new stock into the stock::byName with its own period';
   let processed = stocks(undefined, { type: FETCH_LATEST_SUCCEEDED, response });
   let expect    = {
     APPLEPEN: {
       latest: [timestamp, timestamp],
       data: { [timestamp]: record },
+      period: [timestamp],
     },
   };
   let actual    = processed.byName;
@@ -60,10 +61,12 @@ test('Latest stock reducer', (assert) => {
     APPLEPEN: {
       latest: [timestamp, timestamp],
       data: { [timestamp]: record },
+      period: [timestamp],
     },
     PINEAPPLEPEN: {
       latest: [timestamp, timestamp],
       data: { [timestamp]: record },
+      period: [timestamp],
     },
   };
   processed = stocks(processed, {
@@ -90,12 +93,14 @@ test('Latest stock reducer', (assert) => {
         [timestamp]: record,
         [timestamp + 1]: record2,
       },
+      period: [timestamp, timestamp + 1],
     },
     PINEAPPLEPEN: {
       latest: [timestamp, timestamp],
       data: {
         [timestamp]: record,
       },
+      period: [timestamp],
     },
   };
   processed = stocks(processed, {
@@ -162,6 +167,7 @@ test('Trend stock reducer', (assert) => {
         [timestamp]: record,
         [timestamp + 1]: record,
       },
+      period: [timestamp, timestamp + 1],
     },
   };
 
@@ -176,6 +182,13 @@ test('Trend stock reducer', (assert) => {
         [timestamp - 2]: record2,
         [timestamp - 1]: record3,
       },
+      period: [
+        timestamp,
+        timestamp + 1,
+        timestamp - 3,
+        timestamp - 2,
+        timestamp - 1,
+      ],
     },
   };
   const actual = processed.byName;

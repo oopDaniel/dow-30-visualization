@@ -6,7 +6,7 @@ import test from 'tape';
 import { takeLatest } from 'redux-saga';
 import { call, put, select, take, fork, race } from 'redux-saga/effects';
 import * as actions from './../../src/actions';
-import { getFocused, getStockNames } from './../../src/reducers/selectors';
+import { getFocused, getStockNames, getPeriod } from './../../src/reducers/selectors';
 import * as types from './../../src/consts/actionTypes';
 import STOCKS from './../../src/consts/stocks';
 import api from './../../src/services/API';
@@ -80,6 +80,7 @@ test('Watcher for fetching \'latest\' request saga', (assert) => {
 
 test('Watcher saga for changes of the focused', (assert) => {
   const iterator = nextFocusedChanged();
+  let mock;
   let msg    = 'must take either ADD_FOCUS or REMOVE_FOCUS action';
   let expect = take([types.ADD_FOCUS, types.REMOVE_FOCUS]);
   let actual = iterator.next().value;
@@ -88,16 +89,24 @@ test('Watcher saga for changes of the focused', (assert) => {
 
 
   msg    = 'must select the available stock names';
-  const mock = { type: types.ADD_FOCUS, target: 'APPLE' };
+  mock   = { type: types.ADD_FOCUS, target: 'APPLE' };
   expect = select(getStockNames);
   actual = iterator.next(mock).value;
 
   assert.deepEqual(actual, expect, msg);
 
 
-  msg    = 'delegate to fetchLatest for new stocks that haven\'t fetched yet';
-  expect = fork(fetchLatest, ['APPLE']);
-  actual = iterator.next(['PEN']).value;
+  msg    = 'must select the current period';
+  expect = select(getPeriod);
+  actual = iterator.next(['BANANA']).value;
+
+  assert.deepEqual(actual, expect, msg);
+
+
+  msg    = 'delegate to fetchTrend for new stocks that haven\'t fetched yet';
+  mock   = 2;
+  expect = fork(fetchTrend, ['APPLE'], 2);
+  actual = iterator.next(mock).value;
 
   assert.deepEqual(actual, expect, msg);
 
