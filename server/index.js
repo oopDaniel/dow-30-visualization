@@ -2,16 +2,14 @@ import 'babel-regenerator-runtime';
 import path from 'path';
 import fs from 'fs';
 import express from 'express';
-// import morgan from 'morgan';
 import helmet  from 'helmet';
 
 // ==========================================
 
 import log4js from 'log4js';
 import { DataService } from './core';
+import DB from './core/Database';
 import router from './routes/routes';
-// import CONFIG from './../config';
-// import Database from './core/Database';
 
 
 const app = express();
@@ -31,8 +29,8 @@ log4js.configure({
     {
       type: 'file',
       filename: path.resolve(logPath, 'cheese.log'),
-      maxLogSize: 1024,
-      backups: 3,
+      maxLogSize: 20480,
+      backups: 10,
       category: 'cheese',
     },
   ],
@@ -48,38 +46,23 @@ app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
 
 
 DataService.init()
+  .then(() => {
+    const stmt = `
+        SELECT *
+        FROM  dow30
+        WHERE IsLatest > 0
+        AND Name = 'AA'
+        ORDER BY Name ASC, Date DESC
+      `;
+    return DB.query(stmt);
+  })
   .then(() => logger.info('Data is ready now'));
-
-// let d = new Database();
-// d.ins();
-// setTimeout( () => Database.query().then(e => console.log('asd',e)), 3000);
-// d.query();
 
 
 // ==========================================
 
 
-// TODO - use passport.js
-// TODO - use session store
-
-// const session = require('express-session');
-// const RedisStore = require('connect-redis')(session);
-
-// const sessionOptions = {
-//   host: process.env.REDIS_PORT_6379_TCP_ADDR || 'localhost',
-//   port: process.env.REDIS_PORT_6379_TCP_PORT || 6379
-// };
-
-// app.use(session({
-//   resave: false,
-//   saveUninitialized: false,
-//   store: new RedisStore(sessionOptions),
-//   // you must replace this!
-//   secret: 'c1c5089b5928b7acd4903ccf7171836a'
-// }));
-
 if (process.env.NODE_ENV !== 'production') {
-  // app.use(morgan('dev'));
   const webpack = require('webpack');
   const devConfig = require('../webpack.config.dev');
   const compiler = webpack(devConfig);
@@ -94,13 +77,9 @@ if (process.env.NODE_ENV !== 'production') {
   app.use('/static', express.static(path.join(__dirname, '..', 'dist')));
 }
 
-// for api routes
-// enable body parser
-// const bodyParser = require('body-parser');
-// app.use(bodyParser.json())
-
 
 app.use('/', router);
+
 
 const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;

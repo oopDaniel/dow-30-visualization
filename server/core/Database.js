@@ -41,7 +41,7 @@ export default class Database {
 
     if (!this.hasTableCreated) this.createTable();
 
-    logger.trace('DB: inserting data...')
+    // logger.trace('DB: inserting data...');
     this.db.serialize( () => {
       let stmt  = this.db.prepare('INSERT INTO dow30 (Name, Date, Open, Close, High, Low, Volume, IsLatest) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
       const { date, open, close, high, low, volume, isLatest } = dataset;
@@ -49,7 +49,7 @@ export default class Database {
 
       stmt.finalize();
     });
-    logger.trace('DB: inserting data...done!');
+    // logger.trace('DB: inserting data...done!');
   }
 
 
